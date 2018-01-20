@@ -1,16 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-
-namespace WeatherApiCore.Controllers
-{
-    [Route("api/[controller]")]
-    public class ValuesController : Controller
-    {
-        private ILoggerFactory loggerFactory;
+private ILoggerFactory loggerFactory;
         public ValuesController(ILoggerFactory loggerFactory)
         {
             this.loggerFactory = loggerFactory;
@@ -20,6 +8,7 @@ namespace WeatherApiCore.Controllers
         public IEnumerable<string> Get()
         {
             var logger = this.loggerFactory.CreateLogger<ValuesController>();
+            logger.LogDebug("esta es una traza de prueba");
             return new string[] { "value1", "value2" };
         }
 
@@ -48,4 +37,3 @@ namespace WeatherApiCore.Controllers
         {
         }
     }
-}
