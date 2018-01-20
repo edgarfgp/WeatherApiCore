@@ -3,16 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace WeatherApiCore.Controllers
 {
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {
+        private ILoggerFactory loggerFactory;
+        public ValuesController(ILoggerFactory loggerFactory)
+        {
+            this.loggerFactory = loggerFactory;
+        }
         // GET api/values
         [HttpGet]
         public IEnumerable<string> Get()
         {
+            var logger = this.loggerFactory.CreateLogger<ValuesController>();
             return new string[] { "value1", "value2" };
         }
 

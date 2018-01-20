@@ -4,10 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using WeatherApiCore.IServices;
+using WeatherApiCore.Services;
 
 namespace WeatherApiCore
 {
@@ -23,7 +27,21 @@ namespace WeatherApiCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApiVersioning(options =>
+            {
+                options.ReportApiVersions = true;
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                var multiVersionReader = new HeaderApiVersionReader("x-version");
+                options.ApiVersionReader = multiVersionReader;
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+            });
             services.AddMvc();
+            services.AddSingleton<IWeatherService, WeatherService>();
+
+
+            
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
