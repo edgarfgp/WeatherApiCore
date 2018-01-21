@@ -1,3 +1,4 @@
+using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using WeatherApiCore.IServices;
@@ -21,8 +22,10 @@ namespace WeatherApiCore.Services.Test
             {
                 City = "Madrid",
                 Country = "Spain",
+                Idiom = "Spanish",
+                LocalTime = DateTime.Now,
                 TemperatureMin = 5,
-                TemperatureMax = 6              
+                TemperatureMax = 6
             };
 
         }

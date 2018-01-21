@@ -30,7 +30,7 @@ namespace WeatherApiCore.Controllers
         }
         [HttpGet("forecast/{name}")]
         public WeatherObject GetCitiesByName(string name)
-        {
+        {        
             return this.weatherService.GetCitiesByName(name);
         }
 
