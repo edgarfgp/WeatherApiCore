@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using WeatherApiCore.Model;
 
 namespace WeatherApiCore.IServices
@@ -10,6 +11,10 @@ namespace WeatherApiCore.IServices
     {
         IEnumerable<WeatherObject> GetCities();
         WeatherObject GetCitiesByName(string name);
+
+        WeatherObject GetCitiesByIdiom(string idiom);
+
+        void AddForecast(WeatherObject weather);
 
 
     }

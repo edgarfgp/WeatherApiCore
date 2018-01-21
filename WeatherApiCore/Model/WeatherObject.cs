@@ -7,15 +7,6 @@ namespace WeatherApiCore.Model
 {
     public class WeatherObject
     {
-        public string  Country { get; set; }
-        public string City { get; set; }
-        public long TemperatureMax { get; set; }
-        public long TemperatureMin { get; set; }
-
-
-    }
-    public class WeatherObject2
-    {
         public string Country { get; set; }
         public string City { get; set; }
         public DateTime LocalTime { get; set; }

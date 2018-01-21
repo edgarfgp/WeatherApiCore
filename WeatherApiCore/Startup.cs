@@ -38,7 +38,6 @@ namespace WeatherApiCore
             });
 
             services.AddSingleton<IWeatherService, WeatherService>();
-            services.AddSingleton<IWeatherService2, WeatherService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

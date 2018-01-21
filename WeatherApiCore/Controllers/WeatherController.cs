@@ -12,9 +12,10 @@ namespace WeatherApiCore.Controllers
     [Route("api/[controller]")]
     public class WeatherController : Controller
     {
-        private ILoggerFactory loggerFactory;
+        private readonly ILoggerFactory loggerFactory;
 
-        private IWeatherService weatherService;
+        private readonly IWeatherService weatherService;
+
         public WeatherController(IWeatherService weatherService, ILoggerFactory loggerFactory)
         {
             this.loggerFactory = loggerFactory;
@@ -31,6 +32,17 @@ namespace WeatherApiCore.Controllers
         public WeatherObject GetCitiesByName(string name)
         {
             return this.weatherService.GetCitiesByName(name);
+        }
+
+        [HttpGet("forecast/{idiom}")]
+        public WeatherObject GetCitiesByIdiom(string idiom)
+        {
+            return this.weatherService.GetCitiesByIdiom(idiom);
+        }
+        [HttpPost("forescast")]
+        public void AddForecast(WeatherObject weather)
+        {
+           weatherService.AddForecast(weather);
         }
     }
 }
