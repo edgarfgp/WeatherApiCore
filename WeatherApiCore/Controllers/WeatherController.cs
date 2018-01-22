@@ -33,12 +33,7 @@ namespace WeatherApiCore.Controllers
         {        
             return this.weatherService.GetCitiesByName(name);
         }
-
-        [HttpGet("forecast/{idiom}")]
-        public WeatherObject GetCitiesByIdiom(string idiom)
-        {
-            return this.weatherService.GetCitiesByIdiom(idiom);
-        }
+     
         [HttpPost("forescast")]
         public void AddForecast(WeatherObject weather)
         {

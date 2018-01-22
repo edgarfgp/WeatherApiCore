@@ -15,20 +15,124 @@ namespace WeatherApiCore.Services
         public WeatherService()
         {
             WeatherObjectList = new List<WeatherObject>(){
-                 new WeatherObject { Country = "Spain",  City= "Madrid",  Idiom = "Spanish", LocalTime = DateTime.Now,  TemperatureMin = 08, TemperatureMax= 10 },
-                 new WeatherObject { Country = "UK", City="London",  Idiom = "English", LocalTime = DateTime.Now,  TemperatureMin = 05, TemperatureMax= 09 },
-                 new WeatherObject { Country = "Italy", City="Rome",  Idiom = "Italian", LocalTime = DateTime.Now, TemperatureMin = 14, TemperatureMax= 18 },
+                 new WeatherObject
+                 {
+                      Coord =new Coord {Lat=3.7, Lon=40.42 },
+                      Weather = new Weather[]
+                      {
+                          new Weather
+                          {
+                            Description ="clear sky",
+                            Icon = "01n",
+                            Id=800,
+                            Main = "Clear"
+                          },
+                           new Weather
+                          {
+                            Description ="clear sky",
+                            Icon = "01n",
+                            Id=800,
+                            Main = "Clear"
+                          }
+
+                      },
+                      Base = "stations",
+                      Main = new Main
+                      {
+                          Temp = 5,
+                          Pressure = 1029,
+                          Humidity = 93,
+                          TempMax = 5,
+                          TempMin = 3
+                      },
+                      Visibility = 100000,
+                      Wind = new Wind
+                      {
+                          Speed = 1.5,
+                          Deg = 350
+
+                      },
+                      Clouds = new Clouds
+                      {
+                          All= 0
+                      },
+                      Dt = 151616658400,
+                      Sys = new Sys
+                      {
+                          Type = 1,
+                          Id = 5488,
+                          Message = 0.212124,
+                          Country ="Spain",
+                          Sunrise = 15151548,
+                          Sunset = 254789965,
+
+                      },
+                      Id = 3117735,
+                      Name = "Madrid",
+                      Cod = 20
+                 },
+                 new WeatherObject
+                 {
+                      Coord =new Coord {Lat=3.7, Lon=40.42 },
+                      Weather = new Weather[]
+                      {
+                          new Weather
+                          {
+                            Description ="clear sky",
+                            Icon = "01n",
+                            Id=800,
+                            Main = "Clear"
+                          },
+                           new Weather
+                          {
+                            Description ="clear sky",
+                            Icon = "01n",
+                            Id=800,
+                            Main = "Clear"
+                          }
+
+                      },
+                      Base = "stations",
+                      Main = new Main
+                      {
+                          Temp = 5,
+                          Pressure = 1029,
+                          Humidity = 93,
+                          TempMax = 5,
+                          TempMin = 3
+                      },
+                      Visibility = 100000,
+                      Wind = new Wind
+                      {
+                          Speed = 1.5,
+                          Deg = 350
+
+                      },
+                      Clouds = new Clouds
+                      {
+                          All= 0
+                      },
+                      Dt = 151616658400,
+                      Sys = new Sys
+                      {
+                          Type = 1,
+                          Id = 5488,
+                          Message = 0.212124,
+                          Country ="UK",
+                          Sunrise = 15151548,
+                          Sunset = 254789965,
+
+                      },
+                      Id = 3117735,
+                      Name = "Lodon",
+                      Cod = 20
+                 }
 
             };
         }
         IEnumerable<WeatherObject> IWeatherService.GetCities()
         {
             return WeatherObjectList;
-        }
-
-        WeatherObject IWeatherService.GetCitiesByIdiom(string idiom)
-        {
-            return WeatherObjectList.FirstOrDefault(x => x.Idiom.ToLower().Equals(idiom.ToLower()));
         }
 
         public void AddForecast(WeatherObject weather)
@@ -38,7 +142,7 @@ namespace WeatherApiCore.Services
 
         WeatherObject IWeatherService.GetCitiesByName(string name)
         {
-            return WeatherObjectList.FirstOrDefault(x => x.City.ToLower().Equals(name.ToLower()));
+            return WeatherObjectList.FirstOrDefault(x => x.Name.ToLower().Equals(name.ToLower()));
         }
 
     }

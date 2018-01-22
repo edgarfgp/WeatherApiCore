@@ -117,5 +117,6 @@ namespace WeatherApiCore.Model
     {
 
         public double Speed { get; set; }
+        public long Deg { get; set; }
     }
 }
