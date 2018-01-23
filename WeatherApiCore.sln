@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2020
+VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeatherApiCore", "WeatherApiCore\WeatherApiCore.csproj", "{ACF3FCC9-16E2-4CCE-B6DC-8E0E7E5E4F5E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherApiCore.Test", "WeatherApiCore.Test\WeatherApiCore.Test.csproj", "{870DC65E-04AC-4644-8FDD-FACC95AD05DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeatherApiCore.Test", "WeatherApiCore.Test\WeatherApiCore.Test.csproj", "{870DC65E-04AC-4644-8FDD-FACC95AD05DA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{E88E39A2-DFDF-4059-923B-0DF17D0679A1}"
 EndProject

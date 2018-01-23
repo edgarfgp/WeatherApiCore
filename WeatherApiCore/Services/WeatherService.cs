@@ -11,7 +11,6 @@ namespace WeatherApiCore.Services
     {
         private List<WeatherObject> WeatherObjectList { get; set; }
 
-
         public WeatherService()
         {
             WeatherObjectList = new List<WeatherObject>(){
@@ -121,13 +120,11 @@ namespace WeatherApiCore.Services
                           Country ="UK",
                           Sunrise = 15151548,
                           Sunset = 254789965,
-
                       },
                       Id = 3117735,
-                      Name = "Lodon",
+                      Name = "London",
                       Cod = 20
                  }
-
             };
         }
         IEnumerable<WeatherObject> IWeatherService.GetCities()

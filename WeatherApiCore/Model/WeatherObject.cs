@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WeatherApiCore.Model
 {
-    public class WeatherObject
+    public class WeatherObject : ObjectBase
     {
 
         public Coord Coord { get; set; }

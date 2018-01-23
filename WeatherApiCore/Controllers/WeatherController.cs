@@ -24,7 +24,8 @@ namespace WeatherApiCore.Controllers
         [HttpGet("forecast")]
         public IEnumerable<WeatherObject> GetCityWeather()
         {
-            loggerFactory.CreateLogger<WeatherController>();
+          var log =   loggerFactory.CreateLogger<WeatherController>();
+            log.LogDebug("Llamando al metodo GetCities");
             return this.weatherService.GetCities();
 
         }
