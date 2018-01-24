@@ -40,6 +40,7 @@ namespace WeatherApiCore.Extensions
 
         Task<T> IDatabaseRepo.Create<T>(T document)
         {
+            logger.TraceInfo($"Creating a {document.Class} in memory");
             var i = list.Find(n => n.Id.Equals(document.Id));
 
             if (i == null)

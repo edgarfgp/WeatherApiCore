@@ -6,6 +6,7 @@ using Moq;
 using Unity;
 using WeatherApiCore.IServices;
 using WeatherApiCore.Model;
+using WeatherAppCoreTestHelper;
 
 namespace WeatherApiCore.Services.Test
 {
@@ -20,7 +21,7 @@ namespace WeatherApiCore.Services.Test
         public async Task Setup()
         {
             container = new UnityContainer();
-            await WeatherAppCoreTestHelper.WeatherAppTestHelper.RegisterWeatherDbTest(container);
+            await WeatherAppTestHelper.RegisterWeatherDbTest(container);
 
             container.RegisterType<IWeatherService, WeatherService>();
 
@@ -28,6 +29,7 @@ namespace WeatherApiCore.Services.Test
 
 
         }
+        
 
         [TestMethod]
         public async Task WeatherService_GetWeatherByLocation_ReturnWeather()
@@ -39,7 +41,7 @@ namespace WeatherApiCore.Services.Test
             var obj = new WeatherObject
             {
                 Name = city,
-                Id = 3117735
+               
             };
 
             var o = await repo.Create<WeatherObject>(obj);
@@ -49,7 +51,7 @@ namespace WeatherApiCore.Services.Test
 
             var forecast = ret.Where(x => x.Name.Equals(city)).FirstOrDefault();
 
-            Assert.AreEqual(o.Id, forecast.Id);
+            
             Assert.AreEqual(city, forecast.Name);
 
 

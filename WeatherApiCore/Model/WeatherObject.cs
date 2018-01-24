@@ -35,7 +35,7 @@ namespace WeatherApiCore.Model
         public Sys Sys { get; set; }
 
 
-        public long Id { get; set; }
+       
 
 
         public string Name { get; set; }
@@ -46,13 +46,13 @@ namespace WeatherApiCore.Model
 
     public class Clouds
     {
-
+        public long Id { get; set; }
         public long All { get; set; }
     }
 
     public class Coord
     {
-
+        public long Id { get; set; }
         public double Lon { get; set; }
 
 
@@ -61,7 +61,7 @@ namespace WeatherApiCore.Model
 
     public class Main
     {
-
+        public long Id { get; set; }
         public double Temp { get; set; }
 
 
@@ -115,7 +115,7 @@ namespace WeatherApiCore.Model
 
     public class Wind
     {
-
+        public long Id { get; set; }
         public double Speed { get; set; }
         public long Deg { get; set; }
     }

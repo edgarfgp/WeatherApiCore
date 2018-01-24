@@ -66,7 +66,7 @@ namespace WeatherApiCore.Services
                           Sunset = 254789965,
 
                       },
-                      Id = 3117735,
+                      
                       Name = "Madrid",
                       Cod = 20
                  },
@@ -109,6 +109,7 @@ namespace WeatherApiCore.Services
                       },
                       Clouds = new Clouds
                       {
+                          Id = 123,
                           All= 0
                       },
                       Dt = 151616658400,
@@ -121,7 +122,7 @@ namespace WeatherApiCore.Services
                           Sunrise = 15151548,
                           Sunset = 254789965,
                       },
-                      Id = 3117735,
+                      
                       Name = "London",
                       Cod = 20
                  }
