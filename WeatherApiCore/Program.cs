@@ -34,6 +34,9 @@ namespace WeatherApiCore
                   config.AddJsonFile("appsetings.json", true)
             .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true);
                   config.AddEnvironmentVariables();
+
+
+
               })
               .ConfigureLogging((hostingContext, logging) =>
               {
