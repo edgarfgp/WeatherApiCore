@@ -21,7 +21,6 @@ namespace WeatherApiCore
 {
     public class Startup
     {
-        public DbInitializer Init { get; }
 
         public Startup(IConfiguration configuration)
         {
@@ -46,12 +45,12 @@ namespace WeatherApiCore
                 c.SwaggerDoc("v1", new Info { Title = "Weather Api", Version = "V1" });
             });
 
-            services.AddSingleton<IWeatherService, WeatherService>();
+            //services.AddSingleton<IWeatherService, WeatherService>();
             services.AddSingleton<IWeatherService, WeatherEFService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env )
         {
             if (env.IsDevelopment())
             {
@@ -60,7 +59,6 @@ namespace WeatherApiCore
             
             app.UseMvc();
 
-           
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {

@@ -131,7 +131,7 @@ namespace WeatherApiCore.Data
                     Name = "London",
                     Cod = 20
                 });
-                
+                    
                 context.SaveChanges();
             }
             
