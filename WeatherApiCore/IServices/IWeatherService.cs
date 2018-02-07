@@ -11,7 +11,7 @@ namespace WeatherApiCore.IServices
     {
         IEnumerable<WeatherObject> GetCities();
         WeatherObject GetCitiesByName(string name);
-        void AddForecast(WeatherObject weather);
+        WeatherObject AddForecast(WeatherObject weather);
 
 
     }
