@@ -9,7 +9,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Serilog.Core;
 using Swashbuckle.AspNetCore.Swagger;
 using WeatherApiCore.IServices;
 using WeatherApiCore.Services;
@@ -34,19 +33,20 @@ namespace WeatherApiCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            //DbContext
+            services.AddDbContext<DBContext>(options => options
+            .UseSqlServer(Configuration.GetConnectionString("LocalDB")));
             services.AddMvc();
-            services.AddDbContext<DBContext>();
 
 
-
+            //Swager Configuration
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "Weather Api", Version = "V1" });
             });
 
             //services.AddSingleton<IWeatherService, WeatherService>();
-            services.AddSingleton<IWeatherService, WeatherEFService>();
+            services.AddTransient<IWeatherService, WeatherEFService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,12 +56,14 @@ namespace WeatherApiCore
             {
                 app.UseDeveloperExceptionPage();
             }
+           
+
 
             app.UseMvc();
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "WeatherApi V1");
             });
         }
     }

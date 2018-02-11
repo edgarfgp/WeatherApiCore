@@ -11,18 +11,12 @@ namespace WeatherApiCore.Data
     public class DBContext : DbContext
     {
 
-        public IConfiguration Config { get; set; }
         public DbSet<WeatherObject> WeatherForecast { get; set; }
-
-        public DBContext(IConfiguration configuration)
+        public DBContext(DbContextOptions<DBContext> options) : base(options)
         {
-            Config = configuration;
+
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(ConfigurationExtensions.GetConnectionString(Config,"LocalDB"));  
-        }
     }
 }
 

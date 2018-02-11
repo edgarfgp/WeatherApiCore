@@ -11,8 +11,8 @@ using WeatherApiCore.Data;
 namespace WeatherApiCore.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20180207162725_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20180211115231_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,7 +23,7 @@ namespace WeatherApiCore.Migrations
 
             modelBuilder.Entity("WeatherApiCore.Model.WeatherObject", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("CityName");

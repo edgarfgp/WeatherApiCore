@@ -12,10 +12,10 @@ namespace WeatherApiCore.Services
         static List<WeatherObject> WeatherObjectList = new List<WeatherObject>(){
                  new WeatherObject
                  {
-                     Id = 1,
+                     Id = Guid.NewGuid(),
                      Country = "Spain",
-                     CityName = "Madrid",
-                     Description ="Clear Sky Day",
+                     CityName = "Barcelona",
+                     Description ="Blue Sky Day",
                      Humidity = 20,
                      Icon = "https://images.pexels.com/photos/133953/pexels-photo-133953.jpeg?w=940&h=650&auto=compress&cs=tinysrgb",
                      Temp = 0,
@@ -33,17 +33,14 @@ namespace WeatherApiCore.Services
             return WeatherObjectList;
         }
 
-        WeatherObject IWeatherService.AddForecast(WeatherObject weather)
+        void IWeatherService.AddForecast(WeatherObject weather)
         {
             if (weather != null)
             {
                 WeatherObjectList.Add(weather);
-                return weather;
+
             }
-            else
-            {
-                return null;
-            }
+
 
         }
 

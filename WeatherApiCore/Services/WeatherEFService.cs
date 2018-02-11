@@ -10,29 +10,29 @@ namespace WeatherApiCore.Services
 {
     public class WeatherEFService : IWeatherService
     {
-        private DBContext _context;
+        private DBContext context;
         public WeatherEFService(DBContext context)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            this.context = context;
         }
-        public WeatherObject AddForecast(WeatherObject weather)
+        public void AddForecast(WeatherObject weather)
         {
 
-            _context.Add(weather);
-            return weather;
-
+            context.WeatherForecast.Add(weather);
+            context.SaveChanges();
 
 
         }
 
         public IEnumerable<WeatherObject> GetCities()
         {
-            return _context.WeatherForecast.ToList();
+            return context.WeatherForecast.ToList();
         }
 
         public WeatherObject GetCitiesByName(string name)
         {
-            return _context.WeatherForecast.ToList().FirstOrDefault(x => x.CityName.Equals(name));
+            return context.WeatherForecast.ToList().FirstOrDefault(x => x.CityName.Equals(name));
+
         }
     }
 }

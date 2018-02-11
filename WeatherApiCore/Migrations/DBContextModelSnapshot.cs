@@ -22,7 +22,7 @@ namespace WeatherApiCore.Migrations
 
             modelBuilder.Entity("WeatherApiCore.Model.WeatherObject", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("CityName");
