@@ -24,7 +24,7 @@ namespace WeatherApiCore
                 var services = scope.ServiceProvider;
                 try
                 {
-                    var context = services.GetRequiredService<DBContext>();
+                    var context = services.GetRequiredService<WeatherDBContext>();
                     DbInitializer.Seed(context);
                 }
                 catch (Exception ex)

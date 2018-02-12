@@ -10,26 +10,35 @@ using WeatherApiCore.Data;
 
 namespace WeatherApiCore.Migrations
 {
-    [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(WeatherDBContext))]
+    [Migration("20180212172255_InitialMigration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.0.1-rtm-125")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("WeatherApiCore.Model.WeatherObject", b =>
+            modelBuilder.Entity("WeatherApiCore.Entities.Weather", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("CityName");
+                    b.Property<string>("CityName")
+                        .IsRequired()
+                        .HasMaxLength(20);
 
-                    b.Property<string>("Country");
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasMaxLength(20);
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(200);
+
+                    b.Property<DateTime>("ForecastDate");
 
                     b.Property<long>("Humidity");
 
@@ -37,7 +46,8 @@ namespace WeatherApiCore.Migrations
 
                     b.Property<long>("Pressure");
 
-                    b.Property<double>("Temp");
+                    b.Property<double>("Temp")
+                        .HasMaxLength(20);
 
                     b.Property<long>("TempMax");
 

@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
-using WeatherApiCore.Model;
+using WeatherApiCore.Entities;
+using WeatherApiCore.Models;
 
 namespace WeatherApiCore.IServices
 {
     public interface IWeatherService
     {
-        IEnumerable<WeatherObject> GetCities();
-        WeatherObject GetCitiesByName(Guid id);
-        void AddForecast(WeatherObject weather);
+        IEnumerable<Weather> GetCities();
+        Weather GetCityById(Guid id);
+        void AddCity(Weather weather);
 
 
     }

@@ -3,33 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WeatherApiCore.Data;
+using WeatherApiCore.Entities;
 using WeatherApiCore.IServices;
-using WeatherApiCore.Model;
 
 namespace WeatherApiCore.Services
 {
     public class WeatherEFService : IWeatherService
     {
-        private DBContext context;
-        public WeatherEFService(DBContext context)
+        private WeatherDBContext context;
+        public WeatherEFService(WeatherDBContext context)
         {
             this.context = context;
         }
-        public void AddForecast(WeatherObject weather)
+         void IWeatherService.AddCity(Weather weather)
         {
-
+            weather.Id = Guid.NewGuid();
             context.WeatherForecast.Add(weather);
             context.SaveChanges();
 
 
         }
 
-        public IEnumerable<WeatherObject> GetCities()
+         IEnumerable<Weather> IWeatherService.GetCities()
         {
-            return context.WeatherForecast.ToList();
+            return context.WeatherForecast;
         }
 
-        public WeatherObject GetCitiesByName(Guid id)
+        public Weather GetCityById(Guid id)
         {
             return context.WeatherForecast.ToList().FirstOrDefault(x => x.Id == id);
 

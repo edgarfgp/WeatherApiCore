@@ -13,13 +13,14 @@ namespace WeatherApiCore.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CityName = table.Column<string>(nullable: true),
-                    Country = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true),
+                    CityName = table.Column<string>(maxLength: 20, nullable: false),
+                    Country = table.Column<string>(maxLength: 20, nullable: false),
+                    Description = table.Column<string>(maxLength: 200, nullable: false),
+                    ForecastDate = table.Column<DateTime>(nullable: false),
                     Humidity = table.Column<long>(nullable: false),
                     Icon = table.Column<string>(nullable: true),
                     Pressure = table.Column<long>(nullable: false),
-                    Temp = table.Column<double>(nullable: false),
+                    Temp = table.Column<double>(maxLength: 20, nullable: false),
                     TempMax = table.Column<long>(nullable: false),
                     TempMin = table.Column<long>(nullable: false)
                 },

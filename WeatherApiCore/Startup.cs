@@ -12,9 +12,10 @@ using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
 using WeatherApiCore.IServices;
 using WeatherApiCore.Services;
-using WeatherApiCore.Model;
 using Microsoft.EntityFrameworkCore;
 using WeatherApiCore.Data;
+using WeatherApiCore.Models;
+using WeatherApiCore.Entities;
 
 namespace WeatherApiCore
 {
@@ -34,7 +35,7 @@ namespace WeatherApiCore
         public void ConfigureServices(IServiceCollection services)
         {
             //DbContext
-            services.AddDbContext<DBContext>(options => options
+            services.AddDbContext<WeatherDBContext>(options => options
             .UseSqlServer(Configuration.GetConnectionString("LocalDB")));
             services.AddMvc();
 
@@ -46,7 +47,7 @@ namespace WeatherApiCore
             });
 
             //services.AddSingleton<IWeatherService, WeatherService>();
-            services.AddTransient<IWeatherService, WeatherEFService>();
+            services.AddScoped<IWeatherService, WeatherEFService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,7 +57,14 @@ namespace WeatherApiCore
             {
                 app.UseDeveloperExceptionPage();
             }
-           
+
+            AutoMapper.Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<Weather, Models.WeatherDto>()
+                    .ForMember(dest => dest.Location, opt => opt.MapFrom(src =>
+                    $"{src.CityName} {src.Country}"));
+
+            });
 
 
             app.UseMvc();

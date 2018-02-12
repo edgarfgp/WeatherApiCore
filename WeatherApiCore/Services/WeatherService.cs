@@ -2,19 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WeatherApiCore.Entities;
 using WeatherApiCore.IServices;
-using WeatherApiCore.Model;
 
 namespace WeatherApiCore.Services
 {
     public class WeatherService : IWeatherService
     {
-        static List<WeatherObject> WeatherObjectList = new List<WeatherObject>(){
-                 new WeatherObject
+        static List<Weather> WeatherObjectList = new List<Weather>(){
+                 new Weather
                  {
                      Id = Guid.NewGuid(),
                      Country = "Spain",
                      CityName = "Barcelona",
+                     ForecastDate = DateTime.Now,
                      Description ="Blue Sky Day",
                      Humidity = 20,
                      Icon = "https://images.pexels.com/photos/133953/pexels-photo-133953.jpeg?w=940&h=650&auto=compress&cs=tinysrgb",
@@ -28,12 +29,12 @@ namespace WeatherApiCore.Services
 
 
 
-        IEnumerable<WeatherObject> IWeatherService.GetCities()
+        IEnumerable<Weather> IWeatherService.GetCities()
         {
             return WeatherObjectList;
         }
 
-        void IWeatherService.AddForecast(WeatherObject weather)
+        void IWeatherService.AddCity(Weather weather)
         {
             if (weather != null)
             {
@@ -44,7 +45,7 @@ namespace WeatherApiCore.Services
 
         }
 
-        WeatherObject IWeatherService.GetCitiesByName(Guid id)
+        Weather IWeatherService.GetCityById(Guid id)
         {
             return WeatherObjectList.FirstOrDefault(city => city.Id == id);
         }
