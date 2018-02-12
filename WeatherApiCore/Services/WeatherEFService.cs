@@ -29,9 +29,9 @@ namespace WeatherApiCore.Services
             return context.WeatherForecast.ToList();
         }
 
-        public WeatherObject GetCitiesByName(string name)
+        public WeatherObject GetCitiesByName(Guid id)
         {
-            return context.WeatherForecast.ToList().FirstOrDefault(x => x.CityName.Equals(name));
+            return context.WeatherForecast.ToList().FirstOrDefault(x => x.Id == id);
 
         }
     }

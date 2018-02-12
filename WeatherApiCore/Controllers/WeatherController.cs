@@ -18,19 +18,25 @@ namespace WeatherApiCore.Controllers
         {
             this.weatherService = weatherService;
         }
-        [HttpGet("forecast")]
-        public IEnumerable<WeatherObject> GetCityWeather()
+        [HttpGet("cities")]
+        public IActionResult GetCities()
         {
-            return weatherService.GetCities();
+            var forecast = weatherService.GetCities();
+
+            if (forecast == null)
+            {
+                return NotFound();
+            }
+            return Ok(forecast);
 
         }
-        [HttpGet("forecast/{name}")]
-        public WeatherObject GetCitiesByName(string name)
+        [HttpGet("cities/{name}")]
+        public WeatherObject GetCitiesByName(Guid id)
         {
-            return this.weatherService.GetCitiesByName(name);
+            return this.weatherService.GetCitiesByName(id);
         }
 
-        [HttpPost("forescast")]
+        [HttpPost("cities")]
         public void AddForecast(WeatherObject weather)
         {
             weatherService.AddForecast(weather);

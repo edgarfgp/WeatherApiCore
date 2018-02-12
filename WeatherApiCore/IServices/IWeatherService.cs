@@ -10,7 +10,7 @@ namespace WeatherApiCore.IServices
     public interface IWeatherService
     {
         IEnumerable<WeatherObject> GetCities();
-        WeatherObject GetCitiesByName(string name);
+        WeatherObject GetCitiesByName(Guid id);
         void AddForecast(WeatherObject weather);
 
 

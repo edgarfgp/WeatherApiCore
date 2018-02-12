@@ -44,9 +44,9 @@ namespace WeatherApiCore.Services
 
         }
 
-        WeatherObject IWeatherService.GetCitiesByName(string name)
+        WeatherObject IWeatherService.GetCitiesByName(Guid id)
         {
-            return WeatherObjectList.FirstOrDefault(x => x.CityName.ToLower().Equals(name.ToLower()));
+            return WeatherObjectList.FirstOrDefault(city => city.Id == id);
         }
 
     }
