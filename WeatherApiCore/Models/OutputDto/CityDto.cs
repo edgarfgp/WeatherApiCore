@@ -13,8 +13,7 @@ namespace WeatherApiCore.Models.OutputDto
 
         public string Location { get; set; }
 
-        public ICollection<DayDto> WeekDays { get; set; }
-            = new List<DayDto>();
+       
 
     }
 }
