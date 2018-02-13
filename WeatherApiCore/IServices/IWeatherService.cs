@@ -10,10 +10,18 @@ namespace WeatherApiCore.IServices
 {
     public interface IWeatherService
     {
-        IEnumerable<Weather> GetCities();
-        Weather GetCityById(Guid id);
-        void AddCity(Weather weather);
+        IEnumerable<City> GetCities();
+        City GetCity(Guid id);
 
+        IEnumerable<Day> GetDaysForCity(Guid cityId);
 
+        bool CityExists(Guid cityId);
+        
+        Day GetDayForCity(Guid cityId, Guid id);
+        void AddCity(City weatherEntity);
+
+        void AddDay(Guid cityId, Day day);
+
+        bool Save();
     }
 }

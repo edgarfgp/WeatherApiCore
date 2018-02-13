@@ -11,7 +11,7 @@ using WeatherApiCore.Data;
 namespace WeatherApiCore.Migrations
 {
     [DbContext(typeof(WeatherDBContext))]
-    [Migration("20180212172255_InitialMigration")]
+    [Migration("20180213212736_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,7 +21,7 @@ namespace WeatherApiCore.Migrations
                 .HasAnnotation("ProductVersion", "2.0.1-rtm-125")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("WeatherApiCore.Entities.Weather", b =>
+            modelBuilder.Entity("WeatherApiCore.Entities.City", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
@@ -34,20 +34,31 @@ namespace WeatherApiCore.Migrations
                         .IsRequired()
                         .HasMaxLength(20);
 
+                    b.HasKey("Id");
+
+                    b.ToTable("Forecast");
+                });
+
+            modelBuilder.Entity("WeatherApiCore.Entities.Day", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("CityId");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(200);
-
-                    b.Property<DateTime>("ForecastDate");
 
                     b.Property<long>("Humidity");
 
                     b.Property<string>("Icon");
 
-                    b.Property<long>("Pressure");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200);
 
-                    b.Property<double>("Temp")
-                        .HasMaxLength(20);
+                    b.Property<double>("Temp");
 
                     b.Property<long>("TempMax");
 
@@ -55,7 +66,17 @@ namespace WeatherApiCore.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("WeatherForecast");
+                    b.HasIndex("CityId");
+
+                    b.ToTable("Week");
+                });
+
+            modelBuilder.Entity("WeatherApiCore.Entities.Day", b =>
+                {
+                    b.HasOne("WeatherApiCore.Entities.City", "City")
+                        .WithMany("Days")
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

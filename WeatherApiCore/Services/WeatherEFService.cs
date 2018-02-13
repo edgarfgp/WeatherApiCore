@@ -15,23 +15,60 @@ namespace WeatherApiCore.Services
         {
             this.context = context;
         }
-         void IWeatherService.AddCity(Weather weather)
+
+        public void AddCity(City cityEntity)
         {
-            weather.Id = Guid.NewGuid();
-            context.WeatherForecast.Add(weather);
-            context.SaveChanges();
+            cityEntity.Id = Guid.NewGuid();
+            context.Forecast.Add(cityEntity);
 
-
+            if (cityEntity.Days.Any())
+            {
+                foreach (var day in cityEntity.Days)
+                {
+                    day.Id = Guid.NewGuid();
+                }
+            }
         }
 
-         IEnumerable<Weather> IWeatherService.GetCities()
+        public Day GetDayForCity(Guid cityId, Guid id)
         {
-            return context.WeatherForecast;
+            var days = context.Week.Where(c => c.CityId == cityId) as IEnumerable<Day>;
+            var day = days.Where(d => d.Id == id).FirstOrDefault();
+            return day;
         }
 
-        public Weather GetCityById(Guid id)
+        public IEnumerable<Day> GetDaysForCity(Guid cityId)
         {
-            return context.WeatherForecast.ToList().FirstOrDefault(x => x.Id == id);
+            var days = context.Week.Where(c => c.CityId == cityId).OrderBy(o => o.Name) as IEnumerable<Day>;
+            return days;
+        }
+
+
+        IEnumerable<City> IWeatherService.GetCities()
+        {
+            return context.Forecast.OrderBy(o => o.CityName);
+        }
+
+
+        City IWeatherService.GetCity(Guid id)
+        {
+            return context.Forecast.ToList().FirstOrDefault(x => x.Id == id);
+        }
+
+        public bool Save()
+        {
+            return (context.SaveChanges() >= 0);
+        }
+
+        public bool CityExists(Guid cityId)
+        {
+            return context.Forecast.Any(i => i.Id == cityId);
+        }
+
+        public void AddDay(Guid cityId, Day dayEntity)
+        {
+            dayEntity.CityId = cityId;
+            context.Week.Add(dayEntity);
 
         }
     }

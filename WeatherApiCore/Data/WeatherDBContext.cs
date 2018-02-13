@@ -12,8 +12,11 @@ namespace WeatherApiCore.Data
     public class WeatherDBContext : DbContext
     {
 
-        public DbSet<Weather> WeatherForecast { get; set; }
-        public WeatherDBContext(DbContextOptions<WeatherDBContext> options) 
+        public DbSet<City> Forecast { get; set; }
+
+        public DbSet<Day> Week { get; set; }
+
+        public WeatherDBContext(DbContextOptions<WeatherDBContext> options)
             : base(options)
         {
         }
