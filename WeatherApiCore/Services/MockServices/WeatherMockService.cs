@@ -171,5 +171,17 @@ namespace WeatherApiCore.Services
                 .OrderBy(o => o.CityName)
                 .ToList();
         }
+
+        public void DeleteDay(Day day)
+        {
+            var dayToDelete = WeatherObjectList.FirstOrDefault(c => c.Days.FirstOrDefault().Id == day.Id);
+
+
+        }
+
+        public void DeleteCity(City cityFromService)
+        {
+            WeatherObjectList.Remove(cityFromService);
+        }
     }
 }

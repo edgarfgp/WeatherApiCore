@@ -79,5 +79,15 @@ namespace WeatherApiCore.Services
                 .OrderBy(o => o.CityName)
                 .ToList();
         }
+
+        public void DeleteDay(Day day)
+        {
+            context.Week.Remove(day);
+        }
+
+        public void DeleteCity(City city)
+        {
+            context.Forecast.Remove(city);
+        }
     }
 }

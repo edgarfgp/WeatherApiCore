@@ -11,7 +11,7 @@ using WeatherApiCore.Models.OutputDto;
 
 namespace WeatherApiCore.Controllers
 {
-    [Produces("application/xml")]
+    [Produces("application/json")]
     [Route("api/cities")]
     public class CitiesController : Controller
     {
@@ -97,6 +97,29 @@ namespace WeatherApiCore.Controllers
 
 
             return NotFound();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteCity(Guid id)
+        {
+            var cityFromService = weatherService.GetCity(id);
+
+            if (cityFromService == null)
+            {
+                return NotFound();
+
+            }
+
+            weatherService.DeleteCity(cityFromService);
+
+            if (!weatherService.Save())
+            {
+                throw new Exception($"Deleting city {id} failed on save");
+            }
+
+            return NoContent();
+
+
         }
 
 

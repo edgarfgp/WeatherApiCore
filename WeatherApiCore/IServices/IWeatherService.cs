@@ -24,5 +24,7 @@ namespace WeatherApiCore.IServices
 
         bool Save();
         IEnumerable<City> GetCities(IEnumerable<Guid> cityIds);
+        void DeleteDay(Day day);
+        void DeleteCity(City cityFromService);
     }
 }

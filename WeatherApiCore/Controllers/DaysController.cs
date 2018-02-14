@@ -94,6 +94,31 @@ namespace WeatherApiCore.Controllers
             return CreatedAtRoute("GetDayForCity", new { cityId, id = dayToReturn.Id }, dayToReturn);
         }
 
+        [HttpDelete("{id}")]
+        public IActionResult DeleteDayForCity(Guid cityId, Guid id)
+        {
+            if (!weatherService.CityExists(cityId))
+            {
+                return NotFound();
+            }
+
+            var dayForCityFromService = weatherService.GetDayForCity(cityId, id);
+
+            if (dayForCityFromService == null)
+            {
+                return NotFound();
+            }
+
+            weatherService.DeleteDay(dayForCityFromService);
+
+            if (!weatherService.Save())
+            {
+                throw new Exception($"Delete day Id {id} for city id {cityId} failed on save");
+            }
+
+            return NoContent();
+        }
+
 
     }
 }
