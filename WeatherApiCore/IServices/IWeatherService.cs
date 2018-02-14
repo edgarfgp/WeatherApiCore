@@ -23,5 +23,6 @@ namespace WeatherApiCore.IServices
         void AddDay(Guid cityId, Day day);
 
         bool Save();
+        IEnumerable<City> GetCities(IEnumerable<Guid> cityIds);
     }
 }

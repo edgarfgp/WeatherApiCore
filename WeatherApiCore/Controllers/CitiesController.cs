@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -10,6 +11,7 @@ using WeatherApiCore.Models.OutputDto;
 
 namespace WeatherApiCore.Controllers
 {
+    [Produces("application/xml")]
     [Route("api/cities")]
     public class CitiesController : Controller
     {
@@ -83,5 +85,21 @@ namespace WeatherApiCore.Controllers
 
 
         }
+
+        [HttpPost("{id}")]
+        public IActionResult BlockCityCreation(Guid id)
+        {
+
+            if (weatherService.CityExists(id))
+            {
+                return new StatusCodeResult(StatusCodes.Status409Conflict);
+            }
+
+
+            return NotFound();
+        }
+
+
+
     }
 }

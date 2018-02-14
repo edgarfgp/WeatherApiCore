@@ -43,6 +43,7 @@ namespace WeatherApiCore
             {
                 setupAction.ReturnHttpNotAcceptable = true;
                 setupAction.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
+                setupAction.InputFormatters.Add(new XmlDataContractSerializerInputFormatter());
             });
             //DbContext
             services.AddDbContext<WeatherDBContext>(options => options

@@ -159,9 +159,17 @@ namespace WeatherApiCore.Services
 
         }
 
-        public void AddDay(Guid cityId, Day day)
+        public void AddDay(Guid cityId, Day dayEntity)
         {
             throw new NotImplementedException();
+        }
+
+        public IEnumerable<City> GetCities(IEnumerable<Guid> citiIds)
+        {
+            return WeatherObjectList.Where(c => citiIds.Contains(c.Id))
+                .OrderBy(o => o.Country)
+                .OrderBy(o => o.CityName)
+                .ToList();
         }
     }
 }

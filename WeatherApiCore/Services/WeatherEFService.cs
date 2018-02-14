@@ -71,5 +71,13 @@ namespace WeatherApiCore.Services
             context.Week.Add(dayEntity);
 
         }
+
+        public IEnumerable<City> GetCities(IEnumerable<Guid> cityIds)
+        {
+            return context.Forecast.Where(a => cityIds.Contains(a.Id))
+                .OrderBy(o => o.Country)
+                .OrderBy(o => o.CityName)
+                .ToList();
+        }
     }
 }

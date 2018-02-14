@@ -14,6 +14,7 @@ using WeatherApiCore.Entities;
 
 namespace WeatherApiCore.Controllers
 {
+    [Produces("application/json")]
     [Route("api/cities/{cityId}/days")]
     public class DaysController : Controller
     {
