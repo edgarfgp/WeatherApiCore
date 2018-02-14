@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WeatherApiCore.Data;
+using WeatherApiCore.Extensions;
 
 namespace WeatherApiCore
 {
@@ -25,7 +26,7 @@ namespace WeatherApiCore
                 try
                 {
                     var context = services.GetRequiredService<WeatherDBContext>();
-                    DbInitializer.Seed(context);
+                    CoreExtensions.EnsureSeedDataForContext(context);
                 }
                 catch (Exception ex)
                 {

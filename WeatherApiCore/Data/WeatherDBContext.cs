@@ -19,6 +19,7 @@ namespace WeatherApiCore.Data
         public WeatherDBContext(DbContextOptions<WeatherDBContext> options)
             : base(options)
         {
+            Database.Migrate();
         }
 
     }
