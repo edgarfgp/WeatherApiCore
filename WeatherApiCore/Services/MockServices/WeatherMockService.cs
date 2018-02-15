@@ -159,7 +159,7 @@ namespace WeatherApiCore.Services
 
         }
 
-        public void AddDay(Guid cityId, Day dayEntity)
+        public void AddDayForCity(Guid cityId, Day dayEntity)
         {
             throw new NotImplementedException();
         }
@@ -182,6 +182,11 @@ namespace WeatherApiCore.Services
         public void DeleteCity(City cityFromService)
         {
             WeatherObjectList.Remove(cityFromService);
+        }
+
+        public void UpdateDayForCity(Day dayForCityFromService)
+        {
+            throw new NotImplementedException();
         }
     }
 }

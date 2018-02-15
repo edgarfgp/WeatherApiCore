@@ -50,13 +50,9 @@ namespace WeatherApiCore.Services
         }
 
 
-        City IWeatherService.GetCity(Guid id)
-        {
-            return context.Forecast.ToList().FirstOrDefault(x => x.Id == id);
-        }
-
         public bool Save()
         {
+
             return (context.SaveChanges() >= 0);
         }
 
@@ -65,11 +61,23 @@ namespace WeatherApiCore.Services
             return context.Forecast.Any(i => i.Id == cityId);
         }
 
-        public void AddDay(Guid cityId, Day dayEntity)
+        public void AddDayForCity(Guid cityId, Day dayEntity)
         {
-            dayEntity.CityId = cityId;
-            context.Week.Add(dayEntity);
+            var city = GetCity(cityId);
+            if (city != null)
+            {
+                if (dayEntity.Id == Guid.Empty)
+                {
+                    dayEntity.Id = Guid.NewGuid();
+                }
+                city.Days.Add(dayEntity);
+            }
 
+        }
+
+        public City GetCity(Guid cityId)
+        {
+            return context.Forecast.FirstOrDefault(a => a.Id == cityId);
         }
 
         public IEnumerable<City> GetCities(IEnumerable<Guid> cityIds)
@@ -88,6 +96,11 @@ namespace WeatherApiCore.Services
         public void DeleteCity(City city)
         {
             context.Forecast.Remove(city);
+        }
+
+        public void UpdateDayForCity(Day dayForCityFromService)
+        {
+            //No code is Implemented
         }
     }
 }

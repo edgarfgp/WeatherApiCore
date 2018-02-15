@@ -19,8 +19,9 @@ using WeatherApiCore.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using System.IO;
-using WeatherApiCore.Models.OutputDto;
-using WeatherApiCore.Models.InputDto;
+using WeatherApiCore.Models.Dto;
+using WeatherApiCore.Models.CreateDto;
+using WeatherApiCore.Models.UpdateDto;
 
 namespace WeatherApiCore
 {
@@ -105,9 +106,13 @@ namespace WeatherApiCore
                    .ForMember(dest => dest.TempMaxMin, opt => opt.MapFrom(src =>
                    $"{src.TempMin} - {src.TempMax}"));
 
-                cfg.CreateMap<CityInputDto, City>();
+                cfg.CreateMap<CityForCreateDto, City>();
 
-                cfg.CreateMap<DayInputDto, Day>();
+                cfg.CreateMap<DayForCreateDto, Day>();
+
+                cfg.CreateMap<DayForUpdateDto, Day>();
+
+                cfg.CreateMap<Day, DayForUpdateDto>();
 
             });
 

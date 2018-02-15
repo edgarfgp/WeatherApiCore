@@ -20,11 +20,14 @@ namespace WeatherApiCore.IServices
         Day GetDayForCity(Guid cityId, Guid id);
         void AddCity(City weatherEntity);
 
-        void AddDay(Guid cityId, Day day);
+       
+
+        void AddDayForCity(Guid cityId, Day day);
 
         bool Save();
         IEnumerable<City> GetCities(IEnumerable<Guid> cityIds);
         void DeleteDay(Day day);
         void DeleteCity(City cityFromService);
+        void UpdateDayForCity(Day dayForCityFromService);
     }
 }

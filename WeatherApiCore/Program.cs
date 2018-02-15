@@ -27,6 +27,7 @@ namespace WeatherApiCore
                 {
                     var context = services.GetRequiredService<WeatherDBContext>();
                     CoreExtensions.EnsureSeedDataForContext(context);
+                    //DbInitializer.Seed(context);
                 }
                 catch (Exception ex)
                 {

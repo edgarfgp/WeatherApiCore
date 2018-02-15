@@ -46,7 +46,6 @@ namespace WeatherApiCore.Migrations
                     b.Property<Guid>("CityId");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(200);
 
                     b.Property<long>("Humidity");

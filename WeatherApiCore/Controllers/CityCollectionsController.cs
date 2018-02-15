@@ -9,8 +9,8 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using WeatherApiCore.Entities;
 using WeatherApiCore.Helpers;
 using WeatherApiCore.IServices;
-using WeatherApiCore.Models.InputDto;
-using WeatherApiCore.Models.OutputDto;
+using WeatherApiCore.Models.CreateDto;
+using WeatherApiCore.Models.Dto;
 
 namespace WeatherApiCore.Controllers
 {
@@ -27,7 +27,7 @@ namespace WeatherApiCore.Controllers
             this.weatherService = weatherService;
         }
         [HttpPost()]
-        public IActionResult CreateCityCollectio([FromBody] IEnumerable<CityInputDto> cityCollection)
+        public IActionResult CreateCityCollectio([FromBody] IEnumerable<CityForCreateDto> cityCollection)
         {
 
             if (cityCollection == null)

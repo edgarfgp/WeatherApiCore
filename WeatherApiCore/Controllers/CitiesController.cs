@@ -6,8 +6,8 @@ using System;
 using System.Collections.Generic;
 using WeatherApiCore.Entities;
 using WeatherApiCore.IServices;
-using WeatherApiCore.Models.InputDto;
-using WeatherApiCore.Models.OutputDto;
+using WeatherApiCore.Models.CreateDto;
+using WeatherApiCore.Models.Dto;
 
 namespace WeatherApiCore.Controllers
 {
@@ -57,7 +57,7 @@ namespace WeatherApiCore.Controllers
         }
 
         [HttpPost()]
-        public IActionResult CreateCity([FromBody] CityInputDto city)
+        public IActionResult CreateCity([FromBody] CityForCreateDto city)
         {
 
             if (city == null)

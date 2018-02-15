@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WeatherApiCore.Models.InputDto
+namespace WeatherApiCore.Models.CreateDto
 {
-    public class DayInputDto
+    public class DayForCreateDto
     {
         public string Name { get; set; }
 

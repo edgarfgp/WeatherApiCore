@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace WeatherApiCore.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class InitialMogration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -27,7 +27,7 @@ namespace WeatherApiCore.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     CityId = table.Column<Guid>(nullable: false),
-                    Description = table.Column<string>(maxLength: 200, nullable: false),
+                    Description = table.Column<string>(maxLength: 200, nullable: true),
                     Humidity = table.Column<long>(nullable: false),
                     Icon = table.Column<string>(nullable: true),
                     Name = table.Column<string>(maxLength: 200, nullable: false),

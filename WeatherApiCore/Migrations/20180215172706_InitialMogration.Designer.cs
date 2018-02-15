@@ -11,8 +11,8 @@ using WeatherApiCore.Data;
 namespace WeatherApiCore.Migrations
 {
     [DbContext(typeof(WeatherDBContext))]
-    [Migration("20180214142026_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20180215172706_InitialMogration")]
+    partial class InitialMogration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -47,7 +47,6 @@ namespace WeatherApiCore.Migrations
                     b.Property<Guid>("CityId");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(200);
 
                     b.Property<long>("Humidity");

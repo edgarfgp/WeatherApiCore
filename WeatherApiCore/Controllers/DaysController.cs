@@ -8,13 +8,16 @@ using System.Threading.Tasks;
 using WeatherApiCore.IServices;
 using WeatherApiCore.Models;
 using WeatherApiCore.Extensions;
-using WeatherApiCore.Models.OutputDto;
-using WeatherApiCore.Models.InputDto;
+using WeatherApiCore.Models.Dto;
+using WeatherApiCore.Models.CreateDto;
 using WeatherApiCore.Entities;
+using WeatherApiCore.Models.UpdateDto;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace WeatherApiCore.Controllers
 {
     [Produces("application/json")]
+
     [Route("api/cities/{cityId}/days")]
     public class DaysController : Controller
     {
@@ -67,7 +70,7 @@ namespace WeatherApiCore.Controllers
         }
 
         [HttpPost()]
-        public IActionResult CreateDayForWeather(Guid cityId, [FromBody] DayInputDto day)
+        public IActionResult CreateDayForWeather(Guid cityId, [FromBody] DayForCreateDto day)
         {
             if (day == null)
             {
@@ -82,7 +85,7 @@ namespace WeatherApiCore.Controllers
 
             var dayEntity = Mapper.Map<Day>(day);
 
-            weatherService.AddDay(cityId, dayEntity);
+            weatherService.AddDayForCity(cityId, dayEntity);
 
             if (!weatherService.Save())
             {
@@ -118,6 +121,131 @@ namespace WeatherApiCore.Controllers
 
             return NoContent();
         }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateDayForCity(Guid cityId, Guid id,
+            [FromBody] DayForUpdateDto day)
+        {
+
+            if (day == null)
+            {
+                return BadRequest();
+            }
+
+
+            if (!weatherService.CityExists(cityId))
+            {
+                return NotFound();
+            }
+
+            var dayForCityFromService = weatherService.GetDayForCity(cityId, id);
+
+            if (dayForCityFromService == null)
+            {
+                var dayToAdd = Mapper.Map<Day>(day);
+                dayToAdd.Id = id;
+
+                weatherService.AddDayForCity(cityId, dayToAdd);
+                //return NotFound();
+
+                if (!weatherService.Save())
+                {
+                    throw new Exception($"Upserting day {id}  for city Id {cityId} failed on save");
+                }
+
+                var dayToReturn = Mapper.Map<DayDto>(dayToAdd);
+
+                return CreatedAtRoute("GetDayForCity", new { cityId, id = dayToReturn.Id }, dayToReturn);
+            }
+
+            Mapper.Map(day, dayForCityFromService);
+
+            weatherService.UpdateDayForCity(dayForCityFromService);
+
+            if (!weatherService.Save())
+            {
+                throw new Exception($"Updating day {id} for City {cityId} failed on save");
+            }
+
+            return NoContent();
+
+
+        }
+
+        /// <summary>
+        /// This Method is used to make Partial Updates using application/json-patch standar
+        /// </summary>
+        /// <param name="cityId">The Id of the city</param>
+        /// <param name="id">The Id of the day</param>
+        /// <param name="patchDoc">Type JsonPatch Document</param>
+        /// <returns></returns>
+        /// <remarks>this is for partial updates</remarks>
+        [HttpPatch("{id}")]
+        public IActionResult PartiallyUpdateDayForCity(Guid cityId, Guid id,
+            [FromBody] JsonPatchDocument<DayForUpdateDto> patchDoc)
+        {
+
+            if (patchDoc == null)
+            {
+                return BadRequest();
+            }
+
+            if (!weatherService.CityExists(cityId))
+            {
+                return NotFound();
+            }
+
+            var dayForCityFromService = weatherService.GetDayForCity(cityId, id);
+
+            if (dayForCityFromService == null)
+            {
+                //return NotFound();
+                var dayDto = new DayForUpdateDto();
+                patchDoc.ApplyTo(dayDto);
+
+                var dayToAdd = Mapper.Map<Day>(dayDto);
+
+                dayToAdd.Id = id;
+
+                weatherService.AddDayForCity(cityId, dayToAdd);
+
+                if (!weatherService.Save())
+                {
+
+                    throw new Exception($"Upserting  day id {id} for citi Id {cityId} failed on save.");
+
+
+                }
+
+                var dayToReturn = Mapper.Map<DayDto>(dayToAdd);
+
+                return CreatedAtRoute("GetDayForCity", new { cityId = cityId }, id = dayToReturn.Id);
+
+
+
+            }
+
+            var dayToPatch = Mapper.Map<DayForUpdateDto>(dayForCityFromService);
+
+            patchDoc.ApplyTo(dayToPatch);
+
+            //TODO validation mas be implemented
+
+            Mapper.Map(dayToPatch, dayForCityFromService);
+
+            weatherService.UpdateDayForCity(dayForCityFromService);
+
+            if (!weatherService.Save())
+            {
+                throw new Exception($"Patching day Id {id} for city Id {cityId} failed on save");
+            }
+
+            return NoContent();
+
+
+
+        }
+
 
 
     }
