@@ -13,6 +13,7 @@ using WeatherApiCore.Models.CreateDto;
 using WeatherApiCore.Entities;
 using WeatherApiCore.Models.UpdateDto;
 using Microsoft.AspNetCore.JsonPatch;
+using WeatherApiCore.Helpers;
 
 namespace WeatherApiCore.Controllers
 {
@@ -70,12 +71,24 @@ namespace WeatherApiCore.Controllers
         }
 
         [HttpPost()]
-        public IActionResult CreateDayForWeather(Guid cityId, [FromBody] DayForCreateDto day)
+        public IActionResult CreateDayForDay(Guid cityId, [FromBody] DayForCreateDto day)
         {
             if (day == null)
             {
                 return BadRequest();
 
+            }
+
+            if (day.Description == day.Name)
+            {
+                ModelState.AddModelError(nameof(DayForCreateDto), "The provided description should be different from the title.");
+
+            }
+
+            if (!ModelState.IsValid)
+            {
+
+                return new UnprocessableEntityObjectResult(ModelState);
             }
 
             if (!weatherService.CityExists(cityId))
