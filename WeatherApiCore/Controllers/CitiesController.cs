@@ -16,14 +16,13 @@ namespace WeatherApiCore.Controllers
     public class CitiesController : Controller
     {
         private IWeatherService weatherService;
-        private ILoggerFactory loggerFactory;
-        private ILogger logger;
+        private ILogger<CitiesController> logger;
 
-        public CitiesController(IWeatherService weatherService, ILoggerFactory loggerFactory)
+        public CitiesController(IWeatherService weatherService, ILogger<CitiesController> logger)
         {
             this.weatherService = weatherService;
-            this.loggerFactory = loggerFactory;
-            logger = this.loggerFactory.CreateLogger<CitiesController>();
+            this.logger = logger;
+            
         }
 
 

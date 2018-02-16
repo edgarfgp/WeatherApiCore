@@ -23,6 +23,7 @@ using WeatherApiCore.Models.Dto;
 using WeatherApiCore.Models.CreateDto;
 using WeatherApiCore.Models.UpdateDto;
 using Microsoft.AspNetCore.Diagnostics;
+using NLog.Extensions.Logging;
 
 namespace WeatherApiCore
 {
@@ -80,9 +81,15 @@ namespace WeatherApiCore
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole();
+            //loggerFactory.AddConsole();
 
-            loggerFactory.AddDebug(LogLevel.Information);
+            //loggerFactory.AddDebug(LogLevel.Information);
+
+
+            //Net Core 1.0 config for 2.0 the configuration must be at Program.cs
+            //loggerFactory.AddProvider(new NLog.Extensions.Logging.NLogLoggerProvider());
+            //Net Core 1.0 config
+            // loggerFactory.AddNLog();
 
             if (env.IsDevelopment())
             {

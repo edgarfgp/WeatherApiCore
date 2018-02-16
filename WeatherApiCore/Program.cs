@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NLog.Web;
 using WeatherApiCore.Data;
 using WeatherApiCore.Extensions;
 
@@ -45,6 +46,7 @@ namespace WeatherApiCore
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
+                .UseNLog() 
                 .Build();
     }
 }

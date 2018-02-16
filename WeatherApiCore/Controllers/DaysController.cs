@@ -23,14 +23,14 @@ namespace WeatherApiCore.Controllers
     public class DaysController : Controller
     {
         private IWeatherService weatherService;
-        private ILoggerFactory loggerFactory;
+       
         private ILogger<DaysController> logger;
 
-        public DaysController(IWeatherService weatherService, ILoggerFactory loggerFactory)
+        public DaysController(IWeatherService weatherService, ILogger<DaysController> logger)
         {
             this.weatherService = weatherService;
-            this.loggerFactory = loggerFactory;
-            logger = this.loggerFactory.CreateLogger<DaysController>();
+            this.logger = logger;
+            
         }
 
         [HttpGet()]
@@ -129,8 +129,11 @@ namespace WeatherApiCore.Controllers
 
             if (!weatherService.Save())
             {
+                logger.LogInformation($"Delete day Id {id} for city id {cityId} failed");
                 throw new Exception($"Delete day Id {id} for city id {cityId} failed on save");
             }
+
+            //logger.LogInformation($"Delete day Id {id} for city id {cityId}");
 
             return NoContent();
         }
