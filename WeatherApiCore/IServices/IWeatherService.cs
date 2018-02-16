@@ -4,23 +4,26 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using WeatherApiCore.Entities;
+using WeatherApiCore.Helpers;
 using WeatherApiCore.Models;
 
 namespace WeatherApiCore.IServices
 {
     public interface IWeatherService
     {
-        IEnumerable<City> GetCities();
+        PagedList<City> GetCities(CitiesResourcesParameters citiesResourcesParameters);
+
+
         City GetCity(Guid id);
 
         IEnumerable<Day> GetDaysForCity(Guid cityId);
 
         bool CityExists(Guid cityId);
-        
+
         Day GetDayForCity(Guid cityId, Guid id);
         void AddCity(City weatherEntity);
 
-       
+
 
         void AddDayForCity(Guid cityId, Day day);
 

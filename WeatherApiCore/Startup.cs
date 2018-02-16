@@ -24,6 +24,8 @@ using WeatherApiCore.Models.CreateDto;
 using WeatherApiCore.Models.UpdateDto;
 using Microsoft.AspNetCore.Diagnostics;
 using NLog.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace WeatherApiCore
 {
@@ -76,6 +78,14 @@ namespace WeatherApiCore
             //services.AddSingleton<IWeatherService, WeatherService>();
             services.AddScoped<IWeatherService, WeatherEFService>();
 
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddScoped<IUrlHelper, UrlHelper>(implementationFactory =>
+            {
+                var actionContext = implementationFactory.GetService<IActionContextAccessor>().ActionContext;
+                return new UrlHelper(actionContext);
+
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -107,8 +117,8 @@ namespace WeatherApiCore
                         {
                             var logger = loggerFactory.CreateLogger("Global exception logger");
 
-                            logger.LogError(500, 
-                                exceptionHandlerFeature.Error, 
+                            logger.LogError(500,
+                                exceptionHandlerFeature.Error,
                                 exceptionHandlerFeature.Error.Message);
 
                         }

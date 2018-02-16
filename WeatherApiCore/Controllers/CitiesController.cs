@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using WeatherApiCore.Entities;
+using WeatherApiCore.Helpers;
 using WeatherApiCore.IServices;
 using WeatherApiCore.Models.CreateDto;
 using WeatherApiCore.Models.Dto;
@@ -17,26 +18,84 @@ namespace WeatherApiCore.Controllers
     {
         private IWeatherService weatherService;
         private ILogger<CitiesController> logger;
+        private IUrlHelper urlHelper;
 
-        public CitiesController(IWeatherService weatherService, ILogger<CitiesController> logger)
+
+        public CitiesController(IWeatherService weatherService, ILogger<CitiesController> logger, IUrlHelper urlHelper)
         {
             this.weatherService = weatherService;
             this.logger = logger;
-            
+            this.urlHelper = urlHelper;
         }
 
 
-        [HttpGet()]
-        public IActionResult GetCities()
+        [HttpGet(Name = "GetCities")]
+        public IActionResult GetCities(CitiesResourcesParameters citiesResourcesParameters)
         {
             logger.LogInformation(">>>Start GetVities<<<<< ");
-            var citytList = weatherService.GetCities();
+            var cityFromService = weatherService.GetCities(citiesResourcesParameters);
 
-            var forecast = Mapper.Map<IEnumerable<CityDto>>(citytList);
+            var previousPageLink = cityFromService.HasPrevious ?
+                CreateCityResourceUri(citiesResourcesParameters,
+                ResourceUriType.PreviousPage) : null;
+
+
+            var nextPageLink = cityFromService.HasNext ?
+                CreateCityResourceUri(citiesResourcesParameters,
+                ResourceUriType.NextPage) : null;
+
+            var paginationMetadata = new
+            {
+                totalCount = cityFromService.TotalCount,
+                pageSize = cityFromService.PageSize,
+                currentPage = cityFromService.CurrentPage,
+                totalPages = cityFromService.TotalPages,
+                previousPageLink,
+                nextPageLink
+            };
+
+            Response.Headers.Add("X-Pagination", Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
+
+
+            var cities = Mapper.Map<IEnumerable<CityDto>>(cityFromService);
 
             logger.LogInformation(">>>Ends GetVities<<<<< ");
 
-            return Ok(forecast);
+            return Ok(cities);
+
+        }
+
+
+        private string CreateCityResourceUri(CitiesResourcesParameters citiesResourcesParameters, ResourceUriType type)
+        {
+            switch (type)
+            {
+                case ResourceUriType.PreviousPage:
+                    return urlHelper.Link("GetCities",
+                      new
+                      {
+                          searchQuery = citiesResourcesParameters.SearchQuery,
+                          pageNumber = citiesResourcesParameters.PageNumber - 1,
+                          pageSize = citiesResourcesParameters.PageSize
+                      });
+                case ResourceUriType.NextPage:
+                    return urlHelper.Link("GetCities",
+                      new
+                      {
+                          searchQuery = citiesResourcesParameters.SearchQuery,
+                          pageNumber = citiesResourcesParameters.PageNumber + 1,
+                          pageSize = citiesResourcesParameters.PageSize
+                      });
+
+                default:
+                    return urlHelper.Link("GetCities",
+                    new
+                    {
+                        searchQuery = citiesResourcesParameters.SearchQuery,
+                        pageNumber = citiesResourcesParameters.PageNumber,
+                        pageSize = citiesResourcesParameters.PageSize
+                    });
+            }
 
         }
 

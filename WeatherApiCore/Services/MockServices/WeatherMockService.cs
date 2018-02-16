@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WeatherApiCore.Entities;
+using WeatherApiCore.Helpers;
 using WeatherApiCore.IServices;
 
 namespace WeatherApiCore.Services
@@ -116,9 +117,10 @@ namespace WeatherApiCore.Services
 
 
 
-        IEnumerable<City> IWeatherService.GetCities()
+        PagedList<City> IWeatherService.GetCities(CitiesResourcesParameters citiesResourcesParameters)
         {
-            return WeatherObjectList.OrderBy(o => o.CityName);
+            throw new NotImplementedException();
+            // return WeatherObjectList.OrderBy(o => o.CityName);
         }
 
 

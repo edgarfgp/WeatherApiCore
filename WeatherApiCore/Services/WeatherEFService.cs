@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WeatherApiCore.Data;
 using WeatherApiCore.Entities;
+using WeatherApiCore.Helpers;
 using WeatherApiCore.IServices;
 
 namespace WeatherApiCore.Services
@@ -44,9 +45,14 @@ namespace WeatherApiCore.Services
         }
 
 
-        IEnumerable<City> IWeatherService.GetCities()
+        PagedList<City> IWeatherService.GetCities(CitiesResourcesParameters citiesResourcesParameters)
         {
-            return context.Forecast.OrderBy(o => o.CityName);
+            var collectionBeforePaging = context.Forecast
+                .OrderBy(o => o.CityName)
+                .ThenBy(o => o.Country);
+
+            return PagedList<City>.Create(collectionBeforePaging , citiesResourcesParameters.PageNumber
+                , citiesResourcesParameters.PageSize);
         }
 
 
