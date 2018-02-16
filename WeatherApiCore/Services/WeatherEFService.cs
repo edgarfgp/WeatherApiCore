@@ -49,10 +49,30 @@ namespace WeatherApiCore.Services
         {
             var collectionBeforePaging = context.Forecast
                 .OrderBy(o => o.CityName)
-                .ThenBy(o => o.Country);
+                .ThenBy(o => o.Country).AsQueryable();
 
-            return PagedList<City>.Create(collectionBeforePaging , citiesResourcesParameters.PageNumber
-                , citiesResourcesParameters.PageSize);
+            if (!string.IsNullOrEmpty(citiesResourcesParameters.CityName))
+            {
+                var cityNameForWhereClause = citiesResourcesParameters.CityName
+                    .Trim().ToLowerInvariant();
+
+                collectionBeforePaging = collectionBeforePaging.Where(a => a.CityName.ToLowerInvariant() == cityNameForWhereClause);
+
+            }
+            if (!string.IsNullOrEmpty(citiesResourcesParameters.SearchQuery))
+            {
+                // trim & ignore casing
+                var searchQueryForWhereClause = citiesResourcesParameters.SearchQuery
+                    .Trim().ToLowerInvariant();
+
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.CityName.ToLowerInvariant().Contains(searchQueryForWhereClause)
+                    || a.Country.ToLowerInvariant().Contains(searchQueryForWhereClause));
+            }
+
+            return PagedList<City>.Create(collectionBeforePaging, 
+                citiesResourcesParameters.PageNumber
+                ,citiesResourcesParameters.PageSize);
         }
 
 

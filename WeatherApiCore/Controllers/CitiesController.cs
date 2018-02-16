@@ -75,6 +75,7 @@ namespace WeatherApiCore.Controllers
                       new
                       {
                           searchQuery = citiesResourcesParameters.SearchQuery,
+                          cityName = citiesResourcesParameters.CityName,
                           pageNumber = citiesResourcesParameters.PageNumber - 1,
                           pageSize = citiesResourcesParameters.PageSize
                       });
@@ -83,6 +84,7 @@ namespace WeatherApiCore.Controllers
                       new
                       {
                           searchQuery = citiesResourcesParameters.SearchQuery,
+                          cityName = citiesResourcesParameters.CityName,
                           pageNumber = citiesResourcesParameters.PageNumber + 1,
                           pageSize = citiesResourcesParameters.PageSize
                       });
@@ -92,6 +94,7 @@ namespace WeatherApiCore.Controllers
                     new
                     {
                         searchQuery = citiesResourcesParameters.SearchQuery,
+                        cityName = citiesResourcesParameters.CityName,
                         pageNumber = citiesResourcesParameters.PageNumber,
                         pageSize = citiesResourcesParameters.PageSize
                     });

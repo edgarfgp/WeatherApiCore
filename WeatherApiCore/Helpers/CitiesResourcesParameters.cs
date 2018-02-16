@@ -23,6 +23,8 @@ namespace WeatherApiCore.Helpers
             }
         }
 
+        public string CityName { get; set; }
+
         public string SearchQuery { get; set; }
 
     }
