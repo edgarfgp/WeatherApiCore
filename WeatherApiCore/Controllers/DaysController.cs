@@ -144,6 +144,17 @@ namespace WeatherApiCore.Controllers
             {
                 return BadRequest();
             }
+            if (day.Description == day.Name)
+            {
+                ModelState.AddModelError(nameof(DayForUpdateDto), "The provided description should be different from the title.");
+
+            }
+
+            if (!ModelState.IsValid)
+            {
+
+                return new UnprocessableEntityObjectResult(ModelState);
+            }
 
 
             if (!weatherService.CityExists(cityId))
@@ -214,7 +225,23 @@ namespace WeatherApiCore.Controllers
             {
                 //return NotFound();
                 var dayDto = new DayForUpdateDto();
-                patchDoc.ApplyTo(dayDto);
+                patchDoc.ApplyTo(dayDto, ModelState);
+
+               // patchDoc.ApplyTo(dayDto);
+
+                if (dayDto.Description == dayDto.Name)
+                {
+                    ModelState.AddModelError(nameof(DayForUpdateDto), "The provided description should be different from the title");
+                }
+
+
+                TryValidateModel(dayDto);
+
+
+                if (!ModelState.IsValid)
+                {
+                    return new UnprocessableEntityObjectResult(ModelState);
+                }
 
                 var dayToAdd = Mapper.Map<Day>(dayDto);
 
@@ -240,7 +267,22 @@ namespace WeatherApiCore.Controllers
 
             var dayToPatch = Mapper.Map<DayForUpdateDto>(dayForCityFromService);
 
-            patchDoc.ApplyTo(dayToPatch);
+            patchDoc.ApplyTo(dayToPatch, ModelState);
+
+            if (dayToPatch.Description == dayToPatch.Name)
+            {
+                ModelState.AddModelError(nameof(DayForUpdateDto), "The provided description should be different from the title");
+            }
+
+            TryValidateModel(dayToPatch);
+
+            if (!ModelState.IsValid)
+            {
+
+                return new UnprocessableEntityObjectResult(ModelState);
+            }
+
+
 
             //TODO validation mas be implemented
 
