@@ -11,8 +11,8 @@ using WeatherApiCore.Data;
 namespace WeatherApiCore.Migrations
 {
     [DbContext(typeof(WeatherDBContext))]
-    [Migration("20180215172706_InitialMogration")]
-    partial class InitialMogration
+    [Migration("20180216075417_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

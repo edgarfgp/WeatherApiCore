@@ -12,6 +12,12 @@
   <ItemGroup>
     <Content Remove="nlog.config" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Properties\PublishProfiles\weatherapicore - Web Deploy.pubxml" />
+    <None Remove="Properties\PublishProfiles\WeatherApiCore20180216074500 - Web Deploy.pubxml" />
+    <None Remove="Properties\PublishProfiles\WeatherApiCore20180216082354 - Web Deploy.pubxml" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="6.2.2" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
@@ -24,5 +30,8 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.2" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.5.0-rc2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="1.1.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
 </Project>

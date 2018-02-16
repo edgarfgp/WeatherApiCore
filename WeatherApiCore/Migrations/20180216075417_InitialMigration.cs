@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace WeatherApiCore.Migrations
 {
-    public partial class InitialMogration : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
