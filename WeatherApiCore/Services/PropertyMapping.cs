@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WeatherApiCore.IServices;
 
-namespace WeatherApiCore.Services
+namespace WeatherApiCore.IServices
 {
     public class PropertyMapping<TSource, TDestination> : IPropertyMapping
     {

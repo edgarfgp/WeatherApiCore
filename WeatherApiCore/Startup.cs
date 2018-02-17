@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
 using WeatherApiCore.IServices;
-using WeatherApiCore.Services;
+using WeatherApiCore.IServices;
 using Microsoft.EntityFrameworkCore;
 using WeatherApiCore.Data;
 using WeatherApiCore.Models;
@@ -26,6 +26,8 @@ using Microsoft.AspNetCore.Diagnostics;
 using NLog.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using WeatherApiCore.Services;
+using Newtonsoft.Json.Serialization;
 
 namespace WeatherApiCore
 {
@@ -49,7 +51,14 @@ namespace WeatherApiCore
                 setupAction.ReturnHttpNotAcceptable = true;
                 setupAction.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
                 setupAction.InputFormatters.Add(new XmlDataContractSerializerInputFormatter());
+            }).AddJsonOptions(options =>
+            {
+
+                options.SerializerSettings.ContractResolver =
+                                    new CamelCasePropertyNamesContractResolver();
             });
+
+
             //DbContext
             services.AddDbContext<WeatherDBContext>(options => options
             .UseSqlServer(Configuration.GetConnectionString("LocalDB")));
@@ -88,6 +97,8 @@ namespace WeatherApiCore
 
 
             services.AddTransient<IPropertyMappingService, PropertyMappingService>();
+
+            services.AddTransient<ITypeHelperService, TypeHelperService>();
 
         }
 

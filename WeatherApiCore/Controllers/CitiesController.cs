@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using WeatherApiCore.Entities;
+using WeatherApiCore.Extensions;
 using WeatherApiCore.Helpers;
 using WeatherApiCore.IServices;
 using WeatherApiCore.Models.CreateDto;
@@ -20,15 +21,16 @@ namespace WeatherApiCore.Controllers
         private ILogger<CitiesController> logger;
         private IUrlHelper urlHelper;
         private IPropertyMappingService propertyMappingService;
-
+        private ITypeHelperService typeHelperService;
 
         public CitiesController(IWeatherService weatherService, ILogger<CitiesController> logger, IUrlHelper urlHelper,
-            IPropertyMappingService propertyMappingService)
+            IPropertyMappingService propertyMappingService, ITypeHelperService typeHelperService)
         {
             this.weatherService = weatherService;
             this.logger = logger;
             this.urlHelper = urlHelper;
             this.propertyMappingService = propertyMappingService;
+            this.typeHelperService = typeHelperService;
         }
 
 
@@ -40,6 +42,12 @@ namespace WeatherApiCore.Controllers
             if (!propertyMappingService.ValidMappingExistsFor<CityDto, City>(citiesResourcesParameters.OrderBy))
             {
                 return BadRequest();
+            }
+
+            if (!typeHelperService.TypeHasProperties<CityDto>(citiesResourcesParameters.Fields))
+            {
+                return BadRequest();
+
             }
             var cityFromService = weatherService.GetCities(citiesResourcesParameters);
 
@@ -69,7 +77,7 @@ namespace WeatherApiCore.Controllers
 
             logger.LogInformation(">>>Ends GetVities<<<<< ");
 
-            return Ok(cities);
+            return Ok(cities.ShapeData(citiesResourcesParameters.Fields));
 
         }
 
@@ -82,6 +90,7 @@ namespace WeatherApiCore.Controllers
                     return urlHelper.Link("GetCities",
                       new
                       {
+                          fields = citiesResourcesParameters.Fields,
                           orderBy = citiesResourcesParameters.OrderBy,
                           searchQuery = citiesResourcesParameters.SearchQuery,
                           cityName = citiesResourcesParameters.CityName,
@@ -92,6 +101,7 @@ namespace WeatherApiCore.Controllers
                     return urlHelper.Link("GetCities",
                       new
                       {
+                          fields = citiesResourcesParameters.Fields,
                           orderBy = citiesResourcesParameters.OrderBy,
                           searchQuery = citiesResourcesParameters.SearchQuery,
                           cityName = citiesResourcesParameters.CityName,
@@ -103,6 +113,7 @@ namespace WeatherApiCore.Controllers
                     return urlHelper.Link("GetCities",
                     new
                     {
+                        fields = citiesResourcesParameters.Fields,
                         orderBy = citiesResourcesParameters.OrderBy,
                         searchQuery = citiesResourcesParameters.SearchQuery,
                         cityName = citiesResourcesParameters.CityName,
@@ -115,8 +126,12 @@ namespace WeatherApiCore.Controllers
 
 
         [HttpGet("{id}", Name = "GetCity")]
-        public IActionResult GetCity(Guid id)
+        public IActionResult GetCity(Guid id, [FromQuery] string fields)
         {
+            if (!typeHelperService.TypeHasProperties<CityDto>(fields))
+            {
+                return BadRequest();
+            }
             var cityForecast = weatherService.GetCity(id);
 
             var city = Mapper.Map<CityDto>(cityForecast);
@@ -125,7 +140,7 @@ namespace WeatherApiCore.Controllers
             {
                 return NotFound();
             }
-            return Ok(city);
+            return Ok(city.ShapeData(fields));
         }
 
         [HttpPost()]

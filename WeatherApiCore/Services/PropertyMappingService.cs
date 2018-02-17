@@ -6,7 +6,7 @@ using WeatherApiCore.Entities;
 using WeatherApiCore.IServices;
 using WeatherApiCore.Models.Dto;
 
-namespace WeatherApiCore.Services
+namespace WeatherApiCore.IServices
 {
     public class PropertyMappingService : IPropertyMappingService
     {

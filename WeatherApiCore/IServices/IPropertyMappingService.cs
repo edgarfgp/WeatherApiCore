@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using WeatherApiCore.Services;
+using WeatherApiCore.IServices;
 
 namespace WeatherApiCore.IServices
 {
