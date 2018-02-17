@@ -2,17 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WeatherApiCore.Entities;
 
 namespace WeatherApiCore.Models.Dto
 {
-    public class CityDto
+    public abstract class LinkedResourceBaseDto
     {
-
-        public Guid Id { get; set; }
-
-        public string Location { get; set; }
-
+        public List<LinkDto> Links { get; set; } = new List<LinkDto>();
 
     }
 }

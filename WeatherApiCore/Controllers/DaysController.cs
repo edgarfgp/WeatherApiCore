@@ -23,48 +23,64 @@ namespace WeatherApiCore.Controllers
     public class DaysController : Controller
     {
         private IWeatherService weatherService;
-       
         private ILogger<DaysController> logger;
+        private IUrlHelper urlHelper;
 
-        public DaysController(IWeatherService weatherService, ILogger<DaysController> logger)
+        public DaysController(IWeatherService weatherService, ILogger<DaysController> logger, IUrlHelper urlHelper)
         {
             this.weatherService = weatherService;
             this.logger = logger;
-            
+            this.urlHelper = urlHelper;
+
         }
 
-        [HttpGet()]
+        [HttpGet(Name = "GetDaysForCity")]
         public IActionResult GetDaysForCity(Guid cityId)
         {
 
             logger.LogInformation(">>>>>>>Start GetDaysForCity");
 
-            var week = weatherService.GetDaysForCity(cityId);
-
-            if (week.Count() == 0)
+            if (!weatherService.CityExists(cityId))
             {
                 return NotFound();
             }
 
-            var days = Mapper.Map<List<DayDto>>(week);
+            var daysForCityFromService = weatherService.GetDaysForCity(cityId);
+
+            var daysForCity = Mapper.Map<IEnumerable<DayDto>>(daysForCityFromService);
+
+            daysForCity = daysForCity.Select(day =>
+            {
+                day = CreateLinskForDay(day);
+
+                return day;
+            });
+
+            var wrapper = new LinkedCollectionResourceWrapperDto<DayDto>(daysForCity);
 
             logger.LogInformation("<<<<Ends GetDaysForCity");
 
-            return Ok(days);
+            return Ok(CreateLinksForBooks(wrapper));
         }
 
         [HttpGet("{id}", Name = "GetDayForCity")]
         public IActionResult GetDayForCity(Guid cityId, Guid id)
         {
-            var day = weatherService.GetDayForCity(cityId, id);
 
-            if (day == null)
+            if (!weatherService.CityExists(cityId))
+            {
+                return NotFound();
+
+            }
+            var dayForCityFromService = weatherService.GetDayForCity(cityId, id);
+
+            if (dayForCityFromService == null)
             {
                 return NotFound();
             }
-            var d = Mapper.Map<DayDto>(day);
+            var dayForCity = Mapper.Map<DayDto>(dayForCityFromService);
 
-            return Ok(d);
+            return Ok(CreateLinskForDay(dayForCity));
 
 
 
@@ -107,10 +123,10 @@ namespace WeatherApiCore.Controllers
 
             var dayToReturn = Mapper.Map<DayDto>(dayEntity);
 
-            return CreatedAtRoute("GetDayForCity", new { cityId, id = dayToReturn.Id }, dayToReturn);
+            return CreatedAtRoute("GetDayForCity", new { cityId, id = dayToReturn.Id }, CreateLinskForDay(dayToReturn));
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}", Name = "DeleteDayForCity")]
         public IActionResult DeleteDayForCity(Guid cityId, Guid id)
         {
             if (!weatherService.CityExists(cityId))
@@ -138,7 +154,7 @@ namespace WeatherApiCore.Controllers
             return NoContent();
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}", Name = "UpdateDayForCity")]
         public IActionResult UpdateDayForCity(Guid cityId, Guid id,
             [FromBody] DayForUpdateDto day)
         {
@@ -207,7 +223,7 @@ namespace WeatherApiCore.Controllers
         /// <param name="patchDoc">Type JsonPatch Document</param>
         /// <returns></returns>
         /// <remarks>this is for partial updates</remarks>
-        [HttpPatch("{id}")]
+        [HttpPatch("{id}", Name = "PartiallyUpdateDayForCity")]
         public IActionResult PartiallyUpdateDayForCity(Guid cityId, Guid id,
             [FromBody] JsonPatchDocument<DayForUpdateDto> patchDoc)
         {
@@ -230,7 +246,7 @@ namespace WeatherApiCore.Controllers
                 var dayDto = new DayForUpdateDto();
                 patchDoc.ApplyTo(dayDto, ModelState);
 
-               // patchDoc.ApplyTo(dayDto);
+                // patchDoc.ApplyTo(dayDto);
 
                 if (dayDto.Description == dayDto.Name)
                 {
@@ -302,6 +318,47 @@ namespace WeatherApiCore.Controllers
 
 
 
+        }
+
+
+        private DayDto CreateLinskForDay(DayDto day)
+        {
+            day.Links.Add(new LinkDto(urlHelper.Link("GetDayForCity",
+                            new { id = day.Id }),
+                            "self",
+                            "GET"));
+
+            day.Links.Add(
+                new LinkDto(urlHelper.Link("DeleteDayForCity",
+                new { id = day.Id }),
+                "delete_day",
+                "DELETE"));
+
+            day.Links.Add(
+                new LinkDto(urlHelper.Link("UpdateDayForCity",
+                new { id = day.Id }),
+                "update_day",
+                "PUT"));
+
+            day.Links.Add(
+                new LinkDto(urlHelper.Link("PartiallyUpdateDayForCity",
+                new { id = day.Id }),
+                "partially_update_city",
+                "PATCH"));
+
+            return day;
+        }
+
+        private LinkedCollectionResourceWrapperDto<DayDto> CreateLinksForBooks(
+            LinkedCollectionResourceWrapperDto<DayDto> daysWrapper)
+        {
+            // link to self
+            daysWrapper.Links.Add(
+                new LinkDto(urlHelper.Link("GetDaysForCity", new { }),
+                "self",
+                "GET"));
+
+            return daysWrapper;
         }
 
 

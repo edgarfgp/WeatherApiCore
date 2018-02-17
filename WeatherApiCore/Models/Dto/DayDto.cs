@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WeatherApiCore.Models.Dto
 {
-    public class DayDto
+    public class DayDto : LinkedResourceBaseDto
     {
 
         public Guid Id { get; set; }
