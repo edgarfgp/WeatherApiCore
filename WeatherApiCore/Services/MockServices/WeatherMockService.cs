@@ -6,7 +6,7 @@ using WeatherApiCore.Entities;
 using WeatherApiCore.Helpers;
 using WeatherApiCore.IServices;
 
-namespace WeatherApiCore.Services
+namespace WeatherApiCore.IServices
 {
     public class WeatherMockService : IWeatherService
     {

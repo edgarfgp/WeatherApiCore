@@ -29,5 +29,8 @@ namespace WeatherApiCore.Helpers
 
         public string OrderBy { get; set; } = "location";
 
+        public string Fields { get; set; }
+
+
     }
 }
