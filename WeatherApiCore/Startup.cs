@@ -11,7 +11,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
 using WeatherApiCore.IServices;
-using WeatherApiCore.IServices;
 using Microsoft.EntityFrameworkCore;
 using WeatherApiCore.Data;
 using WeatherApiCore.Models;
