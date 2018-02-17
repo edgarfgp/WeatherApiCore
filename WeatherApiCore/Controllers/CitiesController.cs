@@ -19,13 +19,16 @@ namespace WeatherApiCore.Controllers
         private IWeatherService weatherService;
         private ILogger<CitiesController> logger;
         private IUrlHelper urlHelper;
+        private IPropertyMappingService propertyMappingService;
 
 
-        public CitiesController(IWeatherService weatherService, ILogger<CitiesController> logger, IUrlHelper urlHelper)
+        public CitiesController(IWeatherService weatherService, ILogger<CitiesController> logger, IUrlHelper urlHelper,
+            IPropertyMappingService propertyMappingService)
         {
             this.weatherService = weatherService;
             this.logger = logger;
             this.urlHelper = urlHelper;
+            this.propertyMappingService = propertyMappingService;
         }
 
 
@@ -33,6 +36,11 @@ namespace WeatherApiCore.Controllers
         public IActionResult GetCities(CitiesResourcesParameters citiesResourcesParameters)
         {
             logger.LogInformation(">>>Start GetVities<<<<< ");
+
+            if (!propertyMappingService.ValidMappingExistsFor<CityDto, City>(citiesResourcesParameters.OrderBy))
+            {
+                return BadRequest();
+            }
             var cityFromService = weatherService.GetCities(citiesResourcesParameters);
 
             var previousPageLink = cityFromService.HasPrevious ?
@@ -74,6 +82,7 @@ namespace WeatherApiCore.Controllers
                     return urlHelper.Link("GetCities",
                       new
                       {
+                          orderBy = citiesResourcesParameters.OrderBy,
                           searchQuery = citiesResourcesParameters.SearchQuery,
                           cityName = citiesResourcesParameters.CityName,
                           pageNumber = citiesResourcesParameters.PageNumber - 1,
@@ -83,6 +92,7 @@ namespace WeatherApiCore.Controllers
                     return urlHelper.Link("GetCities",
                       new
                       {
+                          orderBy = citiesResourcesParameters.OrderBy,
                           searchQuery = citiesResourcesParameters.SearchQuery,
                           cityName = citiesResourcesParameters.CityName,
                           pageNumber = citiesResourcesParameters.PageNumber + 1,
@@ -93,6 +103,7 @@ namespace WeatherApiCore.Controllers
                     return urlHelper.Link("GetCities",
                     new
                     {
+                        orderBy = citiesResourcesParameters.OrderBy,
                         searchQuery = citiesResourcesParameters.SearchQuery,
                         cityName = citiesResourcesParameters.CityName,
                         pageNumber = citiesResourcesParameters.PageNumber,

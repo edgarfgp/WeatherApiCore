@@ -4,17 +4,22 @@ using System.Linq;
 using System.Threading.Tasks;
 using WeatherApiCore.Data;
 using WeatherApiCore.Entities;
+using WeatherApiCore.Extensions;
 using WeatherApiCore.Helpers;
 using WeatherApiCore.IServices;
+using WeatherApiCore.Models.Dto;
 
 namespace WeatherApiCore.Services
 {
     public class WeatherEFService : IWeatherService
     {
         private WeatherDBContext context;
-        public WeatherEFService(WeatherDBContext context)
+
+        private IPropertyMappingService propertyMappingService;
+        public WeatherEFService(WeatherDBContext context, IPropertyMappingService propertyMappingService)
         {
             this.context = context;
+            this.propertyMappingService = propertyMappingService;
         }
 
         public void AddCity(City cityEntity)
@@ -47,9 +52,14 @@ namespace WeatherApiCore.Services
 
         PagedList<City> IWeatherService.GetCities(CitiesResourcesParameters citiesResourcesParameters)
         {
-            var collectionBeforePaging = context.Forecast
-                .OrderBy(o => o.CityName)
-                .ThenBy(o => o.Country).AsQueryable();
+            //var collectionBeforePaging = context.Forecast
+            //    .OrderBy(o => o.CityName)
+            //    .ThenBy(o => o.Country).AsQueryable();
+
+            var collectionBeforePaging = context.Forecast.ApplySort(citiesResourcesParameters.OrderBy,
+                propertyMappingService.GetPropertyMapping<CityDto, City>());
+
+
 
             if (!string.IsNullOrEmpty(citiesResourcesParameters.CityName))
             {
@@ -70,9 +80,9 @@ namespace WeatherApiCore.Services
                     || a.Country.ToLowerInvariant().Contains(searchQueryForWhereClause));
             }
 
-            return PagedList<City>.Create(collectionBeforePaging, 
+            return PagedList<City>.Create(collectionBeforePaging,
                 citiesResourcesParameters.PageNumber
-                ,citiesResourcesParameters.PageSize);
+                , citiesResourcesParameters.PageSize);
         }
 
 
