@@ -12,9 +12,12 @@ namespace WeatherApiCore.Extensions
 
         public static void EnsureSeedDataForContext(this WeatherDBContext context)
         {
-            context.Forecast.RemoveRange(context.Forecast);
-            context.SaveChanges();
-            var cities = new List<City>()
+            //context.Forecast.RemoveRange(context.Forecast);
+            // context.SaveChanges();
+
+            if (!context.Forecast.Any())
+            {
+                var cities = new List<City>()
             {
                  new City
                     {
@@ -1028,9 +1031,12 @@ namespace WeatherApiCore.Extensions
                      }
 
             }
+
         };
-            context.Forecast.AddRange(cities);
-            context.SaveChanges();
+                context.Forecast.AddRange(cities);
+                context.SaveChanges();
+
+            }
         }
     }
 }
