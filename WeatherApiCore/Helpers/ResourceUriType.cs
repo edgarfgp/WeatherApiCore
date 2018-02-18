@@ -8,6 +8,7 @@ namespace WeatherApiCore.Helpers
     public enum ResourceUriType
     {
         PreviousPage,
-        NextPage
+        NextPage,
+        Current
     }
 }

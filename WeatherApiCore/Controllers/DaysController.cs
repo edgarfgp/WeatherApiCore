@@ -86,8 +86,8 @@ namespace WeatherApiCore.Controllers
 
         }
 
-        [HttpPost()]
-        public IActionResult CreateDayForDay(Guid cityId, [FromBody] DayForCreateDto day)
+        [HttpPost(Name = "CreateDayForCity")]
+        public IActionResult CreateDayForCity(Guid cityId, [FromBody] DayForCreateDto day)
         {
             if (day == null)
             {

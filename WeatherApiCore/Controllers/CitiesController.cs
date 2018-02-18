@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using WeatherApiCore.Entities;
 using WeatherApiCore.Extensions;
 using WeatherApiCore.Helpers;
@@ -51,14 +52,6 @@ namespace WeatherApiCore.Controllers
             }
             var cityFromService = weatherService.GetCities(citiesResourcesParameters);
 
-            var previousPageLink = cityFromService.HasPrevious ?
-                CreateCityResourceUri(citiesResourcesParameters,
-                ResourceUriType.PreviousPage) : null;
-
-
-            var nextPageLink = cityFromService.HasNext ?
-                CreateCityResourceUri(citiesResourcesParameters,
-                ResourceUriType.NextPage) : null;
 
             var paginationMetadata = new
             {
@@ -66,8 +59,7 @@ namespace WeatherApiCore.Controllers
                 pageSize = cityFromService.PageSize,
                 currentPage = cityFromService.CurrentPage,
                 totalPages = cityFromService.TotalPages,
-                previousPageLink,
-                nextPageLink
+
             };
 
             Response.Headers.Add("X-Pagination", Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
@@ -75,9 +67,29 @@ namespace WeatherApiCore.Controllers
 
             var cities = Mapper.Map<IEnumerable<CityDto>>(cityFromService);
 
+            var links = CreateLinksForCities(citiesResourcesParameters, cityFromService.HasNext, cityFromService.HasPrevious);
+
+            var shapedCities = cities.ShapeData(citiesResourcesParameters.Fields);
+
+            var shapedCitiesWithLinks = shapedCities.Select(city =>
+            {
+                var cityAsADictionary = city as IDictionary<string, object>;
+                var cityLinks = CreateLinksForCity((Guid)cityAsADictionary["Id"], citiesResourcesParameters.Fields);
+
+                cityAsADictionary.Add("links", cityLinks);
+
+                return cityAsADictionary;
+            });
+
+            var linkedCollectionResource = new
+            {
+                value = shapedCitiesWithLinks,
+                links
+            };
+
             logger.LogInformation(">>>Ends GetVities<<<<< ");
 
-            return Ok(cities.ShapeData(citiesResourcesParameters.Fields));
+            return Ok(linkedCollectionResource);
 
         }
 
@@ -108,7 +120,7 @@ namespace WeatherApiCore.Controllers
                           pageNumber = citiesResourcesParameters.PageNumber + 1,
                           pageSize = citiesResourcesParameters.PageSize
                       });
-
+                case ResourceUriType.Current:
                 default:
                     return urlHelper.Link("GetCities",
                     new
@@ -132,15 +144,24 @@ namespace WeatherApiCore.Controllers
             {
                 return BadRequest();
             }
-            var cityForecast = weatherService.GetCity(id);
+            var cityFromService = weatherService.GetCity(id);
 
-            var city = Mapper.Map<CityDto>(cityForecast);
 
-            if (city == null)
+
+            if (cityFromService == null)
             {
                 return NotFound();
             }
-            return Ok(city.ShapeData(fields));
+
+            var city = Mapper.Map<CityDto>(cityFromService);
+
+            var links = CreateLinksForCity(id, fields);
+
+            var linkedDictionaryToReturn = city.ShapeData(fields) as IDictionary<string, object>;
+
+            linkedDictionaryToReturn.Add("links", links);
+
+            return Ok(linkedDictionaryToReturn);
         }
 
         [HttpPost()]
@@ -167,7 +188,13 @@ namespace WeatherApiCore.Controllers
             }
             var cityToReturn = Mapper.Map<CityDto>(cityEntity);
 
-            return CreatedAtRoute("GetCity", new { id = cityToReturn.Id }, cityToReturn);
+            var links = CreateLinksForCity(cityToReturn.Id, null);
+
+            var linkedResourceToReturn = cityToReturn.ShapeData(null) as IDictionary<string, object>;
+
+            linkedResourceToReturn.Add("links", links);
+
+            return CreatedAtRoute("GetCity", new { id = linkedResourceToReturn["Id"] }, linkedResourceToReturn);
 
 
 
@@ -186,7 +213,7 @@ namespace WeatherApiCore.Controllers
             return NotFound();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}", Name = "DeleteCity")]
         public IActionResult DeleteCity(Guid id)
         {
             var cityFromService = weatherService.GetCity(id);
@@ -207,6 +234,83 @@ namespace WeatherApiCore.Controllers
             return NoContent();
 
 
+        }
+
+
+        private IEnumerable<LinkDto> CreateLinksForCity(Guid id, string fields)
+        {
+
+            var links = new List<LinkDto>();
+
+            if (string.IsNullOrWhiteSpace(fields))
+            {
+
+                links.Add(
+                    new LinkDto(urlHelper.Link("GetCity", new { id }),
+                    "self",
+                    "GET"));
+
+            }
+            else
+            {
+
+                links.Add(
+                    new LinkDto(urlHelper.Link("GetCity", new { id, fields }),
+                    "self",
+                    "GET"));
+
+            }
+
+
+            links.Add(
+                new LinkDto(urlHelper.Link("DeleteCity", new { id }),
+                "delete_city",
+                "DELETE"));
+
+            links.Add(
+               new LinkDto(urlHelper.Link("CreateDayForCity", new { cityId = id }),
+               "create_day_for_city",
+               "POST"));
+
+            links.Add(
+               new LinkDto(urlHelper.Link("GetDaysForCity", new { cityId = id }),
+               "days",
+               "GET"));
+
+
+            return links;
+
+        }
+
+        private IEnumerable<LinkDto> CreateLinksForCities(
+           CitiesResourcesParameters citiesResourceParameters,
+           bool hasNext, bool hasPrevious)
+        {
+            var links = new List<LinkDto>();
+
+            // self 
+            links.Add(
+               new LinkDto(CreateCityResourceUri(citiesResourceParameters,
+               ResourceUriType.Current)
+               , "self", "GET"));
+
+            if (hasNext)
+            {
+                links.Add(
+                  new LinkDto(CreateCityResourceUri(citiesResourceParameters,
+                  ResourceUriType.NextPage),
+                  "nextPage", "GET"));
+            }
+
+            if (hasPrevious)
+            {
+                links.Add(
+                    new LinkDto(CreateCityResourceUri(citiesResourceParameters,
+                    ResourceUriType.PreviousPage),
+                    "previousPage", "GET"));
+            }
+
+            return links;
         }
 
 
