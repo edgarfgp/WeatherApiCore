@@ -27,6 +27,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using WeatherApiCore.Services;
 using Newtonsoft.Json.Serialization;
+using AspNetCoreRateLimit;
 
 namespace WeatherApiCore
 {
@@ -136,7 +137,30 @@ namespace WeatherApiCore
 
             );
 
-            services.AddResponseCaching();
+            services.AddMemoryCache();
+
+            services.Configure<IpRateLimitOptions>((options) =>
+            {
+                options.GeneralRules = new System.Collections.Generic.List<RateLimitRule>()
+                {
+                    new RateLimitRule()
+                    {
+                        Endpoint = "*",
+                        Limit = 1000,
+                        Period = "5m"
+                    },
+                    new RateLimitRule()
+                    {
+                        Endpoint = "*",
+                        Limit = 200,
+                        Period = "10s"
+                    }
+                };
+            });
+
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+
 
         }
 
@@ -201,8 +225,11 @@ namespace WeatherApiCore
 
             });
 
-            app.UseResponseCaching();
+
+            app.UseIpRateLimiting();
+            //app.UseResponseCaching();
             app.UseHttpCacheHeaders();
+
 
             app.UseMvc();
             app.UseSwagger();

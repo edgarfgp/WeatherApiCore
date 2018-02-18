@@ -41,6 +41,7 @@ namespace WeatherApiCore.Controllers
         /// <param name="mediaType"></param>
         /// <returns></returns>
         [HttpGet(Name = "GetCities")]
+        [HttpHead]
         public IActionResult GetCities(CitiesResourcesParameters citiesResourcesParameters,
             [FromHeader(Name = "Accept")]string mediaType)
         {
@@ -59,7 +60,7 @@ namespace WeatherApiCore.Controllers
 
 
             var cities = Mapper.Map<IEnumerable<CityDto>>(cityFromService);
-            
+
             if (mediaType == "application/vnd.marvin.hateoas+json")
             {
 
@@ -95,7 +96,7 @@ namespace WeatherApiCore.Controllers
                     links
                 };
 
-                
+
 
                 return Ok(linkedCollectionResource);
             }
@@ -269,6 +270,12 @@ namespace WeatherApiCore.Controllers
 
         }
 
+        [HttpOptions]
+        public IActionResult GetCitiesOptions()
+        {
+            Response.Headers.Add("Allow", "GET,OPTIONS,POST");
+            return Ok();
+        }
 
         private IEnumerable<LinkDto> CreateLinksForCity(Guid id, string fields)
         {
@@ -345,6 +352,10 @@ namespace WeatherApiCore.Controllers
 
             return links;
         }
+
+
+
+
 
 
 
