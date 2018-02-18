@@ -34,11 +34,16 @@ namespace WeatherApiCore.Controllers
             this.typeHelperService = typeHelperService;
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="citiesResourcesParameters"></param>
+        /// <param name="mediaType"></param>
+        /// <returns></returns>
         [HttpGet(Name = "GetCities")]
-        public IActionResult GetCities(CitiesResourcesParameters citiesResourcesParameters)
+        public IActionResult GetCities(CitiesResourcesParameters citiesResourcesParameters,
+            [FromHeader(Name = "Accept")]string mediaType)
         {
-            logger.LogInformation(">>>Start GetVities<<<<< ");
 
             if (!propertyMappingService.ValidMappingExistsFor<CityDto, City>(citiesResourcesParameters.OrderBy))
             {
@@ -53,44 +58,72 @@ namespace WeatherApiCore.Controllers
             var cityFromService = weatherService.GetCities(citiesResourcesParameters);
 
 
-            var paginationMetadata = new
-            {
-                totalCount = cityFromService.TotalCount,
-                pageSize = cityFromService.PageSize,
-                currentPage = cityFromService.CurrentPage,
-                totalPages = cityFromService.TotalPages,
-
-            };
-
-            Response.Headers.Add("X-Pagination", Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
-
-
             var cities = Mapper.Map<IEnumerable<CityDto>>(cityFromService);
-
-            var links = CreateLinksForCities(citiesResourcesParameters, cityFromService.HasNext, cityFromService.HasPrevious);
-
-            var shapedCities = cities.ShapeData(citiesResourcesParameters.Fields);
-
-            var shapedCitiesWithLinks = shapedCities.Select(city =>
+            
+            if (mediaType == "application/vnd.marvin.hateoas+json")
             {
-                var cityAsADictionary = city as IDictionary<string, object>;
-                var cityLinks = CreateLinksForCity((Guid)cityAsADictionary["Id"], citiesResourcesParameters.Fields);
 
-                cityAsADictionary.Add("links", cityLinks);
+                var paginationMetadata = new
+                {
+                    totalCount = cityFromService.TotalCount,
+                    pageSize = cityFromService.PageSize,
+                    currentPage = cityFromService.CurrentPage,
+                    totalPages = cityFromService.TotalPages,
 
-                return cityAsADictionary;
-            });
+                };
 
-            var linkedCollectionResource = new
+                Response.Headers.Add("X-Pagination", Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
+
+
+                var links = CreateLinksForCities(citiesResourcesParameters, cityFromService.HasNext, cityFromService.HasPrevious);
+
+                var shapedCities = cities.ShapeData(citiesResourcesParameters.Fields);
+
+                var shapedCitiesWithLinks = shapedCities.Select(city =>
+                {
+                    var cityAsADictionary = city as IDictionary<string, object>;
+                    var cityLinks = CreateLinksForCity((Guid)cityAsADictionary["Id"], citiesResourcesParameters.Fields);
+
+                    cityAsADictionary.Add("links", cityLinks);
+
+                    return cityAsADictionary;
+                });
+
+                var linkedCollectionResource = new
+                {
+                    value = shapedCitiesWithLinks,
+                    links
+                };
+
+                
+
+                return Ok(linkedCollectionResource);
+            }
+            else
             {
-                value = shapedCitiesWithLinks,
-                links
-            };
+                var previousPageLink = cityFromService.HasPrevious ?
+                    CreateCityResourceUri(citiesResourcesParameters,
+                    ResourceUriType.PreviousPage) : null;
 
-            logger.LogInformation(">>>Ends GetVities<<<<< ");
+                var nextPageLink = cityFromService.HasNext ?
+                    CreateCityResourceUri(citiesResourcesParameters,
+                    ResourceUriType.NextPage) : null;
 
-            return Ok(linkedCollectionResource);
+                var paginationMetadata = new
+                {
+                    previousPageLink,
+                    nextPageLink,
+                    totalCount = cityFromService.TotalCount,
+                    pageSize = cityFromService.PageSize,
+                    currentPage = cityFromService.CurrentPage,
+                    totalPages = cityFromService.TotalPages
+                };
 
+                Response.Headers.Add("X-Pagination",
+                    Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
+
+                return Ok(cities.ShapeData(citiesResourcesParameters.Fields));
+            }
         }
 
 
@@ -164,7 +197,7 @@ namespace WeatherApiCore.Controllers
             return Ok(linkedDictionaryToReturn);
         }
 
-        [HttpPost()]
+        [HttpPost(Name = "CreateCity")]
         public IActionResult CreateCity([FromBody] CityForCreateDto city)
         {
 
